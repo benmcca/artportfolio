@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { placeholderArt } from "../data/placeholderArt";
 
 export default function Home() {
@@ -8,17 +9,19 @@ export default function Home() {
         <div className="grid grid-cols-3 gap-x-6 gap-y-6">
           {placeholderArt.map((art) => (
             <article key={art.id} className="flex flex-col">
-              <div className="overflow-hidden bg-stone-200">
-                <Image
-                  src={art.imageUrl}
-                  alt={art.title}
-                  width={400}
-                  height={400}
-                  className="h-auto w-full object-cover"
-                  sizes="(max-width: 1200px) 33vw, 400px"
-                  loading="lazy"
-                />
-              </div>
+              <Link href={`/${art.id}`}>
+                <div className="overflow-hidden bg-stone-200">
+                  <Image
+                    src={art.imageUrl}
+                    alt={art.title}
+                    width={400}
+                    height={400}
+                    className="h-auto w-full object-cover"
+                    sizes="(max-width: 1200px) 33vw, 400px"
+                    loading="lazy"
+                  />
+                </div>
+              </Link>
             </article>
           ))}
         </div>
