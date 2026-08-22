@@ -32,6 +32,8 @@ export default function Sidebar() {
           Portfolio
         </button>
 
+        <hr className="mb-2 border-0 border-t border-sidebar-border" />
+
         {artCategories.map((category) => (
           <button
             key={category.id}

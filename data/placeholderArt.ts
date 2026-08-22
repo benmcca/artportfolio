@@ -1,12 +1,13 @@
 export type ArtCategory = {
   id: number;
-  name: "paint" | "ink" | "wood";
+  name: string;
 };
 
 export const artCategories: ArtCategory[] = [
-  { id: 1, name: "paint" },
-  { id: 2, name: "ink" },
-  { id: 3, name: "wood" },
+  { id: 1, name: "painting" },
+  { id: 2, name: "drawing" },
+  { id: 3, name: "woodworking" },
+  { id: 4, name: "other" },
 ];
 
 export type PlaceholderArt = {
