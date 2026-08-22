@@ -14,7 +14,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-64 shrink-0 border-r border-sidebar-border bg-sidebar p-5">
+    <aside className="sticky top-0 h-screen w-64 shrink-0 border-r border-sidebar-border bg-sidebar p-5">
       <div className="text-2xl font-bold tracking-[0.1em] text-foreground">
         ben mccabe
       </div>
