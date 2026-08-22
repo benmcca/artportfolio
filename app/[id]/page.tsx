@@ -20,15 +20,22 @@ export default async function ArtworkPage({
 
   return (
     <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-900">
-      <div className="mx-auto w-[60vw] min-w-[700px] max-w-[1200px]">
-        <Image
-          src={artwork.imageUrl}
-          alt={artwork.title}
-          width={800}
-          height={800}
-          className="h-auto w-full"
-        />
-        <h1>{artwork.title}</h1>
+      <div className="mx-auto w-[70vw] min-w-[700px] max-w-[1200px]">
+        <div className="grid grid-cols-[60%_40%]">
+          <div>
+            <Image
+              src={artwork.imageUrl}
+              alt={artwork.title}
+              width={800}
+              height={800}
+              className="h-auto w-full"
+            />
+          </div>
+          <div>
+            <h1>{artwork.title}</h1>
+            <p>{artwork.description}</p>
+          </div>
+        </div>
       </div>
     </main>
   );
