@@ -119,9 +119,9 @@ export const placeholderArt: PlaceholderArt[] = [
   },
   {
     id: 8,
-    title: "Untitled 8",
+    title: "Murmuration",
     date: "2026-08-21",
-    description: `Delicate lines gather into an image shaped by repetition and pause.
+    description: `Acrylic and ink on canvas
 
   ## Repetition and pause
 
