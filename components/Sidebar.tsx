@@ -23,7 +23,7 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={() => handleCategorySelect("all")}
-          className={`w-full rounded px-3 py-2 text-left text-sm transition-colors hover:bg-stone-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 ${
+          className={`w-full rounded px-3 py-2 text-left text-sm transition-colors hover:bg-stone-400/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 ${
             selectedCategory === "all"
               ? "bg-stone-300 text-stone-900"
               : "bg-transparent text-stone-700"
@@ -37,7 +37,7 @@ export default function Sidebar() {
             key={category.id}
             type="button"
             onClick={() => handleCategorySelect(category.id)}
-            className={`w-full rounded px-3 py-2 text-left text-sm capitalize transition-colors hover:bg-stone-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 ${
+            className={`w-full rounded px-3 py-2 text-left text-sm capitalize transition-colors hover:bg-stone-400/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 ${
               selectedCategory === category.id
                 ? "bg-stone-300 text-stone-900"
                 : "bg-transparent text-stone-700"
