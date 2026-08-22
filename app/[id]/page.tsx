@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { placeholderArt } from "../../data/placeholderArt";
@@ -20,9 +22,18 @@ export default async function ArtworkPage({
   }
 
   return (
-    <main className="min-h-screen bg-background px-6 py-10 text-foreground">
+    <main className="min-h-screen bg-background px-6 py-6 text-foreground">
       <div className="mx-auto w-[70vw] min-w-[700px] max-w-[1200px]">
-        <div className="grid grid-cols-[60%_40%]">
+        <Link
+          href="/"
+          aria-label="Back to portfolio"
+          className="inline-flex items-center gap-2 rounded px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+        >
+          <ArrowLeft aria-hidden="true" size={16} />
+          Back
+        </Link>
+
+        <div className="mt-4 grid grid-cols-[60%_40%]">
           <div>
             <Image
               src={artwork.imageUrl}
