@@ -27,7 +27,7 @@ export default function Home() {
                     alt={art.title}
                     width={400}
                     height={400}
-                    className="h-auto w-full object-cover"
+                    className="block h-auto w-full object-cover transition duration-300 ease-out hover:scale-[1.01] hover:brightness-75"
                     sizes="(max-width: 1200px) 33vw, 400px"
                     loading="lazy"
                   />

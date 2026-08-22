@@ -46,7 +46,7 @@ export default async function ArtworkPage({
           <div className="ml-6">
             <h1 className="text-3xl font-bold text-foreground">
               {artwork.title}
-              <span className="ml-3 text-xl font-normal italic text-muted-foreground">
+              <span className="ml-3 text-xl font-normal italic text-foreground">
                 {artwork.date.slice(0, 4)}
               </span>
             </h1>
