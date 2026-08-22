@@ -8,10 +8,11 @@ import { useCategoryFilter } from "../components/CategoryFilterContext";
 export default function Home() {
   const { selectedCategory } = useCategoryFilter();
 
-  const filteredArt =
-    selectedCategory === "all"
-      ? placeholderArt
-      : placeholderArt.filter((art) => art.category === selectedCategory);
+  const filteredArt = [...placeholderArt]
+    .filter(
+      (art) => selectedCategory === "all" || art.category === selectedCategory,
+    )
+    .sort((firstArt, secondArt) => secondArt.date.localeCompare(firstArt.date));
 
   return (
     <main className="min-h-screen bg-background px-6 py-10 text-foreground">

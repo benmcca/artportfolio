@@ -12,6 +12,7 @@ export const artCategories: ArtCategory[] = [
 export type PlaceholderArt = {
   id: number;
   title: string;
+  date: string;
   description: string;
   imageUrl: string;
   category: number;
@@ -21,6 +22,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 1,
     title: "Untitled 1",
+    date: "2021-04-18",
     description: `A quiet study of color, light, and layered texture.
 
   ## Looking closely
@@ -34,6 +36,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 2,
     title: "Untitled 2",
+    date: "2024-09-06",
     description: `An exploration of rhythm and movement through expressive marks.
 
   ## Gesture and pace
@@ -47,6 +50,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 3,
     title: "Untitled 3",
+    date: "2020-11-23",
     description: `A tactile composition inspired by natural forms and worn surfaces.
 
   ### Material memory
@@ -60,6 +64,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 4,
     title: "Untitled 4",
+    date: "2026-02-14",
     description: `A restrained arrangement that considers balance, space, and contrast.
 
   ## An exercise in balance
@@ -73,6 +78,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 5,
     title: "Untitled 5",
+    date: "2023-07-29",
     description: `Soft forms and shifting tones create a sense of quiet reflection.
 
   ### Between memory and image
@@ -86,6 +92,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 6,
     title: "Untitled 6",
+    date: "2025-01-11",
     description: `A study of material and gesture built from simple visual fragments.
 
   ## Built in pieces
@@ -99,6 +106,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 7,
     title: "Untitled 7",
+    date: "2022-06-03",
     description: `Warm color and layered surfaces suggest a remembered landscape.
 
   ## A place recalled
@@ -112,6 +120,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 8,
     title: "Untitled 8",
+    date: "2026-08-21",
     description: `Delicate lines gather into an image shaped by repetition and pause.
 
   ## Repetition and pause
@@ -125,6 +134,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 9,
     title: "Untitled 9",
+    date: "2021-12-09",
     description: `An understated composition focused on grain, shape, and natural detail.
 
   ## Letting the material lead
@@ -138,6 +148,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 10,
     title: "Untitled 10",
+    date: "2024-03-25",
     description: `Contrasting surfaces meet in a small study of structure and atmosphere.
 
   ### Structure and atmosphere
@@ -151,6 +162,7 @@ export const placeholderArt: PlaceholderArt[] = [
   {
     id: 11,
     title: "Untitled 11",
+    date: "2025-10-17",
     description: `A layered visual note about memory, place, and the passing of time.
 
   ## Accumulated time
