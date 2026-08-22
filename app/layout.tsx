@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${robotoMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-stone-100 text-stone-900">
+      <body className="min-h-full bg-background text-foreground">
         <CategoryFilterProvider>
           <div className="flex min-h-screen">
             <Sidebar />

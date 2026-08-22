@@ -14,8 +14,8 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="w-64 shrink-0 border-r border-stone-300 bg-stone-200 p-5">
-      <div className="text-sm uppercase tracking-[0.2em] text-stone-500">
+    <aside className="w-64 shrink-0 border-r border-sidebar-border bg-sidebar p-5">
+      <div className="text-2xl font-bold tracking-[0.1em] text-foreground">
         ben mccabe
       </div>
 
@@ -23,10 +23,10 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={() => handleCategorySelect("all")}
-          className={`w-full rounded px-3 py-2 text-left text-sm transition-colors hover:bg-stone-400/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 ${
+          className={`w-full rounded px-3 py-2 text-left text-sm transition-colors hover:bg-sidebar-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
             selectedCategory === "all"
-              ? "bg-stone-300 text-stone-900"
-              : "bg-transparent text-stone-700"
+              ? "bg-sidebar-active text-sidebar-active-foreground"
+              : "bg-transparent text-muted-foreground"
           }`}
         >
           Portfolio
@@ -37,10 +37,10 @@ export default function Sidebar() {
             key={category.id}
             type="button"
             onClick={() => handleCategorySelect(category.id)}
-            className={`w-full rounded px-3 py-2 text-left text-sm capitalize transition-colors hover:bg-stone-400/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 ${
+            className={`w-full rounded px-3 py-2 text-left text-sm capitalize transition-colors hover:bg-sidebar-hover hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${
               selectedCategory === category.id
-                ? "bg-stone-300 text-stone-900"
-                : "bg-transparent text-stone-700"
+                ? "bg-sidebar-active text-sidebar-active-foreground"
+                : "bg-transparent text-muted-foreground"
             }`}
           >
             {category.name}

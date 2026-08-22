@@ -20,7 +20,7 @@ export default async function ArtworkPage({
   }
 
   return (
-    <main className="min-h-screen bg-stone-100 px-6 py-10 text-stone-900">
+    <main className="min-h-screen bg-background px-6 py-10 text-foreground">
       <div className="mx-auto w-[70vw] min-w-[700px] max-w-[1200px]">
         <div className="grid grid-cols-[60%_40%]">
           <div>
