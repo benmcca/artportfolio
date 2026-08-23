@@ -23,7 +23,7 @@ export default function Home() {
               <Link href={`/${art.id}`} className="group">
                 <div className="relative">
                   <Image
-                    src={art.imageUrl}
+                    src={art.images[0]}
                     alt={art.title}
                     width={400}
                     height={400}
