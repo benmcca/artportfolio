@@ -76,7 +76,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
               }
               width={800}
               height={800}
-              className="h-auto w-full"
+              className="h-auto w-ful rounded"
             />
           </button>
         ))}
@@ -84,7 +84,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
 
       {activeIndex !== null && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/15 p-6 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/15 p-6 backdrop-blur-lg"
           role="dialog"
           aria-modal="true"
           aria-label={`${title}, image ${activeIndex + 1} of ${images.length}`}

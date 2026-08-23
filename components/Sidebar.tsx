@@ -52,6 +52,17 @@ export default function Sidebar() {
             {category.name}
           </button>
         ))}
+
+        <hr className="mt-2 border-0 border-t border-sidebar-border" />
+
+        <a
+          href="https://benmcca.com"
+          target="_blank"
+          rel="noreferrer"
+          className="block w-full rounded px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+        >
+          About Me
+        </a>
       </div>
     </aside>
   );
