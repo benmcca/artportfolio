@@ -19,7 +19,11 @@ export default function Home() {
       <div className="mx-auto w-[60vw] min-w-[700px] max-w-[1200px]">
         <div className="grid grid-cols-3 gap-x-6 gap-y-6">
           {filteredArt.map((art) => (
-            <article key={art.id} className="flex flex-col">
+            <article
+              key={art.id}
+              className="flex flex-col"
+              style={{ viewTransitionName: `art-${art.id}` }}
+            >
               <Link href={`/${art.id}`} className="group">
                 <div className="relative">
                   <Image

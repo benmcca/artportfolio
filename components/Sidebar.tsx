@@ -1,16 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { artCategories } from "../data/placeholderArt";
 import { useCategoryFilter } from "./CategoryFilterContext";
 
 export default function Sidebar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { selectedCategory, setSelectedCategory } = useCategoryFilter();
 
   function handleCategorySelect(category: number | "all") {
     setSelectedCategory(category);
-    router.push("/");
+
+    if (pathname !== "/") {
+      router.push("/");
+    }
   }
 
   return (

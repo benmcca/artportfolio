@@ -37,3 +37,49 @@ body {
   color: var(--foreground);
   font-family: var(--font-roboto-mono), monospace;
 }
+
+::view-transition-group(*) {
+  animation-duration: 200ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  height: 100%;
+  overflow: clip;
+}
+
+::view-transition-old(*) {
+  animation: gallery-card-out 350ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-new(*) {
+  animation: gallery-card-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes gallery-card-out {
+  to {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+@keyframes gallery-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms;
+  }
+}
