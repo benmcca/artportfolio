@@ -79,13 +79,31 @@ export const placeholderArt: PlaceholderArt[] = [
     id: 4,
     title: "Untitled 4",
     date: "2026-02-14",
-    description: `A restrained arrangement that considers balance, space, and contrast.
+    description: `Acrylic and ink on canvas
 
-  ## An exercise in balance
+  ## Repetition and pause
 
-  The open areas are as deliberate as the marks themselves, allowing small changes in weight and placement to become more pronounced. Nothing competes for attention, but every shape quietly changes the pressure around it.
+  Their accumulation creates moments of density and calm, giving the composition a quiet pulse that rewards close attention. The lightest lines are easy to miss, but they keep the heavier passages from becoming fixed.
 
-  The arrangement can be read from several directions. A dark form anchors the lower edge, pale intervals open the center, and a narrow vertical mark gives the eye a path outward. The piece rewards distance first, then a closer look at the small shifts in tone.`,
+  The drawing moves through a simple sequence: a line appears, the line is repeated with a small change, and the pattern breaks to leave a pause. That rhythm gives the image its sense of breathing room.
+  
+  Their accumulation creates moments of density and calm, giving the composition a quiet pulse that rewards close attention. The lightest lines are easy to miss, but they keep the heavier passages from becoming fixed.
+
+  The drawing moves through a simple sequence: a line appears, the line is repeated with a small change, and the pattern breaks to leave a pause. That rhythm gives the image its sense of breathing room.
+  
+  Their accumulation creates moments of density and calm, giving the composition a quiet pulse that rewards close attention. The lightest lines are easy to miss, but they keep the heavier passages from becoming fixed.
+
+  The drawing moves through a simple sequence: a line appears, the line is repeated with a small change, and the pattern breaks to leave a pause. That rhythm gives the image its sense of breathing room.
+  
+  Their accumulation creates moments of density and calm, giving the composition a quiet pulse that rewards close attention. The lightest lines are easy to miss, but they keep the heavier passages from becoming fixed.
+
+  The drawing moves through a simple sequence: a line appears, the line is repeated with a small change, and the pattern breaks to leave a pause. That rhythm gives the image its sense of breathing room.
+  
+  Their accumulation creates moments of density and calm, giving the composition a quiet pulse that rewards close attention. The lightest lines are easy to miss, but they keep the heavier passages from becoming fixed.
+
+  The drawing moves through a simple sequence: a line appears, the line is repeated with a small change, and the pattern breaks to leave a pause. That rhythm gives the image its sense of breathing room.
+  
+  The drawing moves through a simple sequence: a line appears, the line is repeated with a small change, and the pattern breaks to leave a pause. That rhythm gives the image its sense of breathing room.`,
     images: [
       "https://picsum.photos/seed/art-4/400/400",
       "https://picsum.photos/seed/art-4-detail-1/400/400",

@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import StickyTextPanel from "../../components/StickyTextPanel";
 import { placeholderArt } from "../../data/placeholderArt";
 
 export function generateStaticParams() {
@@ -50,35 +51,37 @@ export default async function ArtworkPage({
               />
             ))}
           </div>
-          <div className="ml-6">
-            <h1 className="text-3xl font-bold text-foreground">
-              {artwork.title}
-              <span className="ml-3 text-xl font-normal italic text-foreground">
-                {artwork.date.slice(0, 4)}
-              </span>
-            </h1>
-            <ReactMarkdown
-              components={{
-                p: ({ children }) => (
-                  <p className="mb-4 text-muted-foreground last:mb-0">
-                    {children}
-                  </p>
-                ),
-                h2: ({ children }) => (
-                  <h2 className="mb-3 text-xl font-semibold text-foreground">
-                    {children}
-                  </h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="mb-2 text-md font-semibold text-foreground">
-                    {children}
-                  </h3>
-                ),
-              }}
-            >
-              {artwork.description}
-            </ReactMarkdown>
-          </div>
+          <StickyTextPanel>
+            <div className="ml-6">
+              <h1 className="text-3xl font-bold text-foreground">
+                {artwork.title}
+                <span className="ml-3 text-xl font-normal italic text-foreground">
+                  {artwork.date.slice(0, 4)}
+                </span>
+              </h1>
+              <ReactMarkdown
+                components={{
+                  p: ({ children }) => (
+                    <p className="mb-4 text-muted-foreground last:mb-0">
+                      {children}
+                    </p>
+                  ),
+                  h2: ({ children }) => (
+                    <h2 className="mb-3 text-xl font-semibold text-foreground">
+                      {children}
+                    </h2>
+                  ),
+                  h3: ({ children }) => (
+                    <h3 className="mb-2 text-md font-semibold text-foreground">
+                      {children}
+                    </h3>
+                  ),
+                }}
+              >
+                {artwork.description}
+              </ReactMarkdown>
+            </div>
+          </StickyTextPanel>
         </div>
       </div>
     </main>
