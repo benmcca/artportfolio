@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
+import ImageLightbox from "../../components/ImageLightbox";
 import StickyTextPanel from "../../components/StickyTextPanel";
 import { placeholderArt } from "../../data/placeholderArt";
 
@@ -35,22 +35,7 @@ export default async function ArtworkPage({
         </Link>
 
         <div className="mt-4 grid grid-cols-[60%_40%]">
-          <div>
-            {artwork.images.map((imageUrl, imageIndex) => (
-              <Image
-                key={imageUrl}
-                src={imageUrl}
-                alt={
-                  imageIndex === 0
-                    ? artwork.title
-                    : `${artwork.title}, image ${imageIndex + 1}`
-                }
-                width={800}
-                height={800}
-                className="h-auto w-full mb-2"
-              />
-            ))}
-          </div>
+          <ImageLightbox images={artwork.images} title={artwork.title} />
           <StickyTextPanel>
             <div className="ml-6">
               <h1 className="text-3xl font-bold text-foreground">
