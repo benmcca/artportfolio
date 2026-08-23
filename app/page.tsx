@@ -20,17 +20,20 @@ export default function Home() {
         <div className="grid grid-cols-3 gap-x-6 gap-y-6">
           {filteredArt.map((art) => (
             <article key={art.id} className="flex flex-col">
-              <Link href={`/${art.id}`}>
-                <div className="overflow-hidden bg-surface">
+              <Link href={`/${art.id}`} className="group">
+                <div className="relative">
                   <Image
                     src={art.imageUrl}
                     alt={art.title}
                     width={400}
                     height={400}
-                    className="block h-auto w-full object-cover transition duration-300 ease-out hover:scale-[1.01] hover:brightness-75"
+                    className="block h-auto w-full rounded transition-[filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50"
                     sizes="(max-width: 1200px) 33vw, 400px"
                     loading="lazy"
                   />
+                  <span className="font-semibold text-lg pointer-events-none absolute inset-0 flex items-center justify-center px-4 text-center text-foreground opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100">
+                    {art.title}
+                  </span>
                 </div>
               </Link>
             </article>
