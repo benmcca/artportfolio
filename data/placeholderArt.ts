@@ -44,7 +44,11 @@ export const placeholderArt: PlaceholderArt[] = [
         url: "https://picsum.photos/seed/art-1-detail-1/400/400",
         hidden: true,
       },
-      "https://picsum.photos/seed/art-1-detail-2/400/400",
+      {
+        type: "image",
+        url: "https://picsum.photos/seed/art-1-detail-2/400/400",
+        hidden: true,
+      },
     ],
     galleryImage: "https://picsum.photos/seed/art-1-detail-1/400/400",
     categories: [1],

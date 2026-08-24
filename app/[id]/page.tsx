@@ -4,12 +4,11 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import ImageLightbox from "../../components/ImageLightbox";
 import StickyTextPanel from "../../components/StickyTextPanel";
-import { placeholderArt } from "../../data/placeholderArt";
 import { getVisibleArtMedia } from "../../utils/artMedia";
+import { createSupabaseServerClient } from "../../utils/supabase/server";
+import type { Artwork } from "../../utils/artwork";
 
-export function generateStaticParams() {
-  return placeholderArt.map((art) => ({ id: String(art.id) }));
-}
+type ArtworkCategoryRow = { category_id: number };
 
 export default async function ArtworkPage({
   params,
@@ -17,7 +16,30 @@ export default async function ArtworkPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const artwork = placeholderArt.find((item) => String(item.id) === id);
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("artwork")
+    .select("*, artwork_categories(category_id)")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Unable to load artwork: ${error.message}`);
+  }
+
+  const artwork: Artwork | null = data
+    ? {
+        id: data.id,
+        title: data.title,
+        date: data.date,
+        description: data.description,
+        images: data.images as Artwork["images"],
+        galleryImage: data.gallery_image ?? undefined,
+        categories: (data.artwork_categories as ArtworkCategoryRow[]).map(
+          (category) => category.category_id,
+        ),
+      }
+    : null;
 
   if (!artwork) {
     notFound();

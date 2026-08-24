@@ -1,10 +1,10 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { artCategories } from "../data/placeholderArt";
+import type { ArtCategory } from "../utils/artwork";
 import { useCategoryFilter } from "./CategoryFilterContext";
 
-export default function Sidebar() {
+export default function Sidebar({ categories }: { categories: ArtCategory[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const { selectedCategory, setSelectedCategory } = useCategoryFilter();
@@ -38,7 +38,7 @@ export default function Sidebar() {
 
         <hr className="mb-2 border-0 border-t border-sidebar-border" />
 
-        {artCategories.map((category) => (
+        {categories.map((category) => (
           <button
             key={category.id}
             type="button"
