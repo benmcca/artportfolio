@@ -11,7 +11,8 @@ export default function Home() {
 
   const filteredArt = [...placeholderArt]
     .filter(
-      (art) => selectedCategory === "all" || art.category === selectedCategory,
+      (art) =>
+        selectedCategory === "all" || art.categories.includes(selectedCategory),
     )
     .sort((firstArt, secondArt) => secondArt.date.localeCompare(firstArt.date));
 

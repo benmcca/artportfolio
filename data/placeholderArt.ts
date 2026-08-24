@@ -19,7 +19,7 @@ export type PlaceholderArt = {
   description: string;
   images: ArtMedia[];
   galleryImage?: string;
-  category: number;
+  categories: number[];
 };
 
 export const placeholderArt: PlaceholderArt[] = [
@@ -47,7 +47,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-1-detail-2/400/400",
     ],
     galleryImage: "https://picsum.photos/seed/art-1-detail-1/400/400",
-    category: 1,
+    categories: [1],
   },
   {
     id: 2,
@@ -67,7 +67,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-2-detail-3/400/400",
       "https://picsum.photos/seed/art-2-detail-4/400/400",
     ],
-    category: 2,
+    categories: [2],
   },
   {
     id: 3,
@@ -84,7 +84,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-3/400/400",
       "https://picsum.photos/seed/art-3-detail-1/400/400",
     ],
-    category: 3,
+    categories: [3],
   },
   {
     id: 4,
@@ -121,7 +121,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-4-detail-2/400/400",
       "https://picsum.photos/seed/art-4-detail-3/400/400",
     ],
-    category: 1,
+    categories: [1, 3],
   },
   {
     id: 5,
@@ -135,7 +135,7 @@ export const placeholderArt: PlaceholderArt[] = [
 
   Colors arrive in slow intervals, moving from cool grey into rose and back again. The eye finds a shape, loses it, and then discovers another shape underneath. What remains indistinct can still carry a precise emotional weight.`,
     images: ["https://picsum.photos/seed/art-5/400/400"],
-    category: 2,
+    categories: [2],
   },
   {
     id: 6,
@@ -153,7 +153,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-6-detail-1/400/400",
       "https://picsum.photos/seed/art-6-detail-2/400/400",
     ],
-    category: 3,
+    categories: [3],
   },
   {
     id: 7,
@@ -173,7 +173,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-7-detail-3/400/400",
       "https://picsum.photos/seed/art-7-detail-4/400/400",
     ],
-    category: 1,
+    categories: [1],
   },
   {
     id: 8,
@@ -190,7 +190,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-8/400/400",
       "https://picsum.photos/seed/art-8-detail-1/400/400",
     ],
-    category: 2,
+    categories: [2],
   },
   {
     id: 9,
@@ -209,7 +209,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-9-detail-2/400/400",
       "https://picsum.photos/seed/art-9-detail-3/400/400",
     ],
-    category: 3,
+    categories: [3],
   },
   {
     id: 10,
@@ -229,7 +229,7 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-10-detail-3/400/400",
       "https://picsum.photos/seed/art-10-detail-4/400/400",
     ],
-    category: 1,
+    categories: [1],
   },
   {
     id: 11,
@@ -247,6 +247,6 @@ export const placeholderArt: PlaceholderArt[] = [
       "https://picsum.photos/seed/art-11-detail-1/400/400",
       "https://picsum.photos/seed/art-11-detail-2/400/400",
     ],
-    category: 2,
+    categories: [2],
   },
 ];
