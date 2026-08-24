@@ -3,22 +3,45 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { type ArtMedia, getYouTubeVideoId } from "../utils/artMedia";
 
 type ImageLightboxProps = {
-  images: string[];
+  images: ArtMedia[];
   title: string;
 };
+
+function isYouTubeMedia(
+  media: ArtMedia,
+): media is Extract<ArtMedia, { type: "youtube" }> {
+  return typeof media !== "string" && media.type === "youtube";
+}
+
+function getYouTubeEmbedUrl(media: Extract<ArtMedia, { type: "youtube" }>) {
+  const videoId = getYouTubeVideoId(media.url);
+  if (!videoId) {
+    return media.url;
+  }
+
+  const sourceUrl = new URL(media.url);
+  const shareId = sourceUrl.searchParams.get("si");
+  return `https://www.youtube.com/embed/${videoId}${shareId ? `?si=${shareId}` : ""}`;
+}
 
 export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isLightboxVisible, setIsLightboxVisible] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
 
   const openLightbox = (imageIndex: number) => {
     setIsLightboxVisible(false);
     setActiveIndex(imageIndex);
   };
-  const closeLightbox = () => setIsLightboxVisible(false);
+  const closeLightbox = () => {
+    setIsLightboxVisible(false);
+    triggerButtonRef.current?.focus();
+  };
   const showPrevious = () => {
     setActiveIndex((currentIndex) =>
       currentIndex === null
@@ -54,6 +77,27 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
         setActiveIndex((currentIndex) =>
           currentIndex === null ? null : (currentIndex + 1) % images.length,
         );
+      } else if (event.key === "Tab") {
+        const focusableElements =
+          dialogRef.current?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])',
+          );
+
+        if (!focusableElements?.length) {
+          event.preventDefault();
+          return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
       }
     };
 
@@ -70,33 +114,59 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   return (
     <>
       <div className="space-y-2">
-        {images.map((imageUrl, imageIndex) => (
-          <button
-            key={imageUrl}
-            type="button"
-            className="block w-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            onClick={() => openLightbox(imageIndex)}
-            aria-label={`Enlarge ${title}, image ${imageIndex + 1}`}
-          >
-            <Image
-              src={imageUrl}
-              alt={
-                imageIndex === 0 ? title : `${title}, image ${imageIndex + 1}`
-              }
-              width={800}
-              height={800}
-              className="h-auto w-ful rounded"
-            />
-          </button>
-        ))}
+        {images.map((media, mediaIndex) => {
+          const mediaAlt =
+            mediaIndex === 0 ? title : `${title}, media ${mediaIndex + 1}`;
+          const imageUrl = typeof media === "string" ? media : media.url;
+
+          if (isYouTubeMedia(media)) {
+            return (
+              <div
+                key={media.url}
+                className="aspect-video w-full overflow-hidden rounded bg-black"
+              >
+                <iframe
+                  src={getYouTubeEmbedUrl(media)}
+                  title={`${title} video`}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            );
+          }
+
+          return (
+            <button
+              key={imageUrl}
+              type="button"
+              className="block w-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              onClick={(event) => {
+                triggerButtonRef.current = event.currentTarget;
+                openLightbox(mediaIndex);
+              }}
+              aria-label={`Enlarge ${mediaAlt}`}
+            >
+              <Image
+                src={imageUrl}
+                alt={mediaAlt}
+                width={800}
+                height={800}
+                className="h-auto w-full rounded"
+              />
+            </button>
+          );
+        })}
       </div>
 
       {activeIndex !== null && (
         <div
-          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/15 p-6 backdrop-blur-lg transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLightboxVisible ? "opacity-100" : "opacity-0"}`}
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/15 p-8 backdrop-blur-lg transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${isLightboxVisible ? "opacity-100" : "opacity-0"}`}
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
-          aria-label={`${title}, image ${activeIndex + 1} of ${images.length}`}
+          aria-label={`${title}, media ${activeIndex + 1} of ${images.length}`}
           onTransitionEnd={(event) => {
             if (
               event.target === event.currentTarget &&
@@ -115,7 +185,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
           <button
             ref={closeButtonRef}
             type="button"
-            className="absolute right-4 top-4 z-10 rounded-full p-2 text-white transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="absolute right-8 top-8 z-10 rounded-full p-2 text-white transition-colors hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             onClick={closeLightbox}
             aria-label="Close enlarged image"
           >
@@ -141,17 +211,36 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
               </button>
             )}
 
-            <Image
-              src={images[activeIndex]}
-              alt={
-                activeIndex === 0 ? title : `${title}, image ${activeIndex + 1}`
-              }
-              width={1600}
-              height={1600}
-              sizes="90vw"
-              className="h-auto max-h-full w-auto max-w-[calc(100%_-_5rem)] object-contain"
-              priority
-            />
+            {isYouTubeMedia(images[activeIndex]) ? (
+              <div className="aspect-video h-full max-h-[calc(100%_-_10rem)] max-w-[calc(100%_-_10rem)]">
+                <iframe
+                  src={getYouTubeEmbedUrl(images[activeIndex])}
+                  title={`${title} video`}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <Image
+                src={
+                  typeof images[activeIndex] === "string"
+                    ? images[activeIndex]
+                    : images[activeIndex].url
+                }
+                alt={
+                  activeIndex === 0
+                    ? title
+                    : `${title}, image ${activeIndex + 1}`
+                }
+                width={1600}
+                height={1600}
+                sizes="90vw"
+                className="h-full max-h-[calc(100%_-_5rem)] max-w-[calc(100%_-_10rem)] object-contain"
+                priority
+              />
+            )}
 
             {images.length > 1 && (
               <button

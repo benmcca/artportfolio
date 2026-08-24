@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { placeholderArt } from "../data/placeholderArt";
+import { getGalleryImage } from "../utils/artMedia";
 import { useCategoryFilter } from "../components/CategoryFilterContext";
 
 export default function Home() {
@@ -25,16 +26,25 @@ export default function Home() {
               style={{ viewTransitionName: `art-${art.id}` }}
             >
               <Link href={`/${art.id}`} className="group">
-                <div className="relative">
-                  <Image
-                    src={art.images[0]}
-                    alt={art.title}
-                    width={400}
-                    height={400}
-                    className="block h-auto w-full rounded transition-[filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50"
-                    sizes="(max-width: 1200px) 33vw, 400px"
-                    loading="lazy"
-                  />
+                <div className="relative aspect-square overflow-hidden rounded">
+                  {(() => {
+                    const galleryImage = getGalleryImage(art);
+
+                    return galleryImage ? (
+                      <Image
+                        src={
+                          typeof galleryImage === "string"
+                            ? galleryImage
+                            : galleryImage.url
+                        }
+                        alt={art.title}
+                        fill
+                        className="block object-cover transition-[filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50"
+                        sizes="(max-width: 1200px) 33vw, 400px"
+                        loading="lazy"
+                      />
+                    ) : null;
+                  })()}
                   <span className="font-semibold text-lg pointer-events-none absolute inset-0 flex items-center justify-center px-4 text-center text-foreground opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100">
                     {art.title}
                   </span>

@@ -1,3 +1,5 @@
+import type { ArtMedia } from "../utils/artMedia";
+
 export type ArtCategory = {
   id: number;
   name: string;
@@ -15,7 +17,8 @@ export type PlaceholderArt = {
   title: string;
   date: string;
   description: string;
-  images: string[];
+  images: ArtMedia[];
+  galleryImage?: string;
   category: number;
 };
 
@@ -32,10 +35,18 @@ export const placeholderArt: PlaceholderArt[] = [
 
   The work began with a limited palette and grew through several transparent passes of muted ochre and rose, diluted umber, and a final veil of blue-grey. The image is less about a single view than the feeling of watching light settle.`,
     images: [
-      "https://picsum.photos/seed/art-1/400/400",
-      "https://picsum.photos/seed/art-1-detail-1/400/400",
+      {
+        type: "youtube",
+        url: "https://youtu.be/wzsq2YhTrOE?si=UvM5DKbWlNwL29DJ",
+      },
+      {
+        type: "image",
+        url: "https://picsum.photos/seed/art-1-detail-1/400/400",
+        hidden: true,
+      },
       "https://picsum.photos/seed/art-1-detail-2/400/400",
     ],
+    galleryImage: "https://picsum.photos/seed/art-1-detail-1/400/400",
     category: 1,
   },
   {

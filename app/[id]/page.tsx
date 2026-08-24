@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import ImageLightbox from "../../components/ImageLightbox";
 import StickyTextPanel from "../../components/StickyTextPanel";
 import { placeholderArt } from "../../data/placeholderArt";
+import { getVisibleArtMedia } from "../../utils/artMedia";
 
 export function generateStaticParams() {
   return placeholderArt.map((art) => ({ id: String(art.id) }));
@@ -35,7 +36,10 @@ export default async function ArtworkPage({
         </Link>
 
         <div className="mt-4 grid grid-cols-[60%_40%]">
-          <ImageLightbox images={artwork.images} title={artwork.title} />
+          <ImageLightbox
+            images={getVisibleArtMedia(artwork)}
+            title={artwork.title}
+          />
           <StickyTextPanel>
             <div className="ml-6">
               <h1 className="text-3xl font-bold text-foreground">
