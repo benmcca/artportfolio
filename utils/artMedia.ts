@@ -1,12 +1,14 @@
 export type ArtImage = {
   type: "image";
   url: string;
+  visible?: boolean;
   hidden?: boolean;
 };
 
 export type ArtYouTube = {
   type: "youtube";
   url: string;
+  visible?: boolean;
   hidden?: boolean;
 };
 
@@ -48,8 +50,8 @@ export function getYouTubeVideoId(url: string) {
 
 export function getVisibleArtMedia(art: ArtWithMedia) {
   return art.images.filter((media) => {
-    const isHiddenByMedia = typeof media !== "string" && media.hidden;
-    return !isHiddenByMedia;
+    if (typeof media === "string") return true;
+    return media.visible !== false && !media.hidden;
   });
 }
 
@@ -64,10 +66,12 @@ export function getGalleryImage(art: ArtWithMedia) {
   );
 
   return (
-    imageMedia.find((media) =>
+    visibleImageMedia.find((media) =>
       typeof media === "string"
         ? media === art.galleryImage
         : media.url === art.galleryImage,
-    ) ?? visibleImageMedia[0]
+    ) ??
+    visibleImageMedia[0] ??
+    imageMedia[0]
   );
 }

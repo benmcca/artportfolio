@@ -22,13 +22,37 @@ function getTextValue(formData: FormData, field: string) {
 }
 
 function parseMediaUrls(value: string) {
+  try {
+    const parsed = JSON.parse(value);
+    if (
+      Array.isArray(parsed) &&
+      parsed.every(
+        (media) =>
+          typeof media === "object" &&
+          media !== null &&
+          typeof media.url === "string" &&
+          (media.type === "image" || media.type === "youtube"),
+      )
+    ) {
+      return parsed.map((media) => ({
+        type: media.type,
+        url: media.url,
+        visible: media.visible !== false && !media.hidden,
+      })) as ArtMedia[];
+    }
+  } catch {
+    // Legacy records and manually pasted URLs use newline-delimited text.
+  }
+
   return value
     .split("\n")
     .map((url) => url.trim())
     .filter(Boolean)
     .map(
       (url): ArtMedia =>
-        getYouTubeVideoId(url) ? { type: "youtube", url } : url,
+        getYouTubeVideoId(url)
+          ? { type: "youtube", url, visible: true }
+          : { type: "image", url, visible: true },
     );
 }
 

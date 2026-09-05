@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Image uploads
+
+Admin image uploads use ImageKit for CDN delivery and automatic format and quality selection. Add these values to the server environment before using the upload control:
+
+```bash
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+```
+
+The ImageKit account's URL endpoint must be `https://ik.imagekit.io/...`; this is the delivery host configured in `next.config.ts`. The private key is only read by the server upload route and is never exposed to the browser.
+
 First, run the development server:
 
 ```bash

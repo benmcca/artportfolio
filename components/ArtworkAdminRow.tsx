@@ -117,7 +117,7 @@ export default function ArtworkAdminRow({
           title={`${isVisible ? "Hide" : "Show"} ${artwork.title}`}
           disabled={isTogglingVisibility}
           onClick={handleToggleVisibility}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isVisible ? (
             <Eye aria-hidden="true" size={16} />
@@ -133,7 +133,7 @@ export default function ArtworkAdminRow({
             event.stopPropagation();
             router.push(`/admin/artwork/${artwork.id}/edit`);
           }}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
         >
           <Pencil aria-hidden="true" size={16} />
         </button>
@@ -152,7 +152,7 @@ export default function ArtworkAdminRow({
           disabled={isDeleting}
           onClick={handleDelete}
           onMouseLeave={() => setIsDeleteExpanded(false)}
-          className={`flex h-9 shrink-0 items-center justify-center gap-2 rounded text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 disabled:cursor-wait disabled:opacity-60 ${
+          className={`flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 disabled:cursor-wait disabled:opacity-60 ${
             isDeleteExpanded
               ? "w-[5.5rem] bg-red-950 px-3 text-red-300 hover:bg-red-900"
               : "w-9 text-muted-foreground hover:bg-red-950 hover:text-red-300"
