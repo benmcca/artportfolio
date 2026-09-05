@@ -8,9 +8,7 @@ import { getGalleryImage } from "../utils/artMedia";
 import type { Artwork } from "../utils/artwork";
 
 export default function Gallery({ artwork }: { artwork: Artwork[] }) {
-  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>(
-    {},
-  );
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
   const { selectedCategory, categories } = useCategoryFilter();
   const heading =
     selectedCategory === "all"

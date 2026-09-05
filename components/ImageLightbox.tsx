@@ -30,9 +30,7 @@ function getYouTubeEmbedUrl(media: Extract<ArtMedia, { type: "youtube" }>) {
 export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isLightboxVisible, setIsLightboxVisible] = useState(false);
-  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>(
-    {},
-  );
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
