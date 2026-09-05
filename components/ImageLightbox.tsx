@@ -30,6 +30,9 @@ function getYouTubeEmbedUrl(media: Extract<ArtMedia, { type: "youtube" }>) {
 export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isLightboxVisible, setIsLightboxVisible] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>(
+    {},
+  );
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -141,19 +144,37 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
             <button
               key={imageUrl}
               type="button"
-              className="block w-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="relative block w-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               onClick={(event) => {
                 triggerButtonRef.current = event.currentTarget;
                 openLightbox(mediaIndex);
               }}
               aria-label={`Enlarge ${mediaAlt}`}
             >
+              {!loadedImages[imageUrl] && (
+                <div
+                  className="absolute inset-0 animate-pulse rounded bg-surface"
+                  aria-hidden="true"
+                />
+              )}
               <Image
                 src={imageUrl}
                 alt={mediaAlt}
                 width={800}
                 height={800}
-                className="h-auto w-full rounded"
+                className={`h-auto w-full rounded transition-opacity duration-500 ${loadedImages[imageUrl] ? "opacity-100" : "opacity-0"}`}
+                onLoad={() =>
+                  setLoadedImages((current) => ({
+                    ...current,
+                    [imageUrl]: true,
+                  }))
+                }
+                onError={() =>
+                  setLoadedImages((current) => ({
+                    ...current,
+                    [imageUrl]: true,
+                  }))
+                }
               />
             </button>
           );
@@ -223,23 +244,51 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                 />
               </div>
             ) : (
-              <Image
-                src={
+              <div className="relative h-full max-h-[calc(100%_-_5rem)] max-w-[calc(100%_-_10rem)]">
+                {!loadedImages[
                   typeof images[activeIndex] === "string"
                     ? images[activeIndex]
                     : images[activeIndex].url
-                }
-                alt={
-                  activeIndex === 0
-                    ? title
-                    : `${title}, image ${activeIndex + 1}`
-                }
-                width={1600}
-                height={1600}
-                sizes="90vw"
-                className="h-full max-h-[calc(100%_-_5rem)] max-w-[calc(100%_-_10rem)] object-contain"
-                priority
-              />
+                ] && (
+                  <div
+                    className="absolute inset-0 animate-pulse rounded bg-surface"
+                    aria-hidden="true"
+                  />
+                )}
+                <Image
+                  src={
+                    typeof images[activeIndex] === "string"
+                      ? images[activeIndex]
+                      : images[activeIndex].url
+                  }
+                  alt={
+                    activeIndex === 0
+                      ? title
+                      : `${title}, image ${activeIndex + 1}`
+                  }
+                  width={1600}
+                  height={1600}
+                  sizes="90vw"
+                  className={`h-full max-h-[calc(100%_-_5rem)] max-w-[calc(100%_-_10rem)] object-contain transition-opacity duration-300 ${loadedImages[typeof images[activeIndex] === "string" ? images[activeIndex] : images[activeIndex].url] ? "opacity-100" : "opacity-0"}`}
+                  onLoad={() =>
+                    setLoadedImages((current) => ({
+                      ...current,
+                      [typeof images[activeIndex] === "string"
+                        ? images[activeIndex]
+                        : images[activeIndex].url]: true,
+                    }))
+                  }
+                  onError={() =>
+                    setLoadedImages((current) => ({
+                      ...current,
+                      [typeof images[activeIndex] === "string"
+                        ? images[activeIndex]
+                        : images[activeIndex].url]: true,
+                    }))
+                  }
+                  priority
+                />
+              </div>
             )}
 
             {images.length > 1 && (

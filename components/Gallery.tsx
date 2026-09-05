@@ -2,11 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { useCategoryFilter } from "./CategoryFilterContext";
 import { getGalleryImage } from "../utils/artMedia";
 import type { Artwork } from "../utils/artwork";
 
 export default function Gallery({ artwork }: { artwork: Artwork[] }) {
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>(
+    {},
+  );
   const { selectedCategory, categories } = useCategoryFilter();
   const heading =
     selectedCategory === "all"
@@ -43,18 +47,38 @@ export default function Gallery({ artwork }: { artwork: Artwork[] }) {
                     const galleryImage = getGalleryImage(item);
 
                     return galleryImage ? (
-                      <Image
-                        src={
-                          typeof galleryImage === "string"
-                            ? galleryImage
-                            : galleryImage.url
-                        }
-                        alt={item.title}
-                        fill
-                        className="block object-cover transition-[filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50"
-                        sizes="(max-width: 1200px) 33vw, 400px"
-                        loading="lazy"
-                      />
+                      <>
+                        {!loadedImages[item.id] && (
+                          <div
+                            className="absolute inset-0 animate-pulse bg-surface"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <Image
+                          src={
+                            typeof galleryImage === "string"
+                              ? galleryImage
+                              : galleryImage.url
+                          }
+                          alt={item.title}
+                          fill
+                          className={`block object-cover transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50 ${loadedImages[item.id] ? "opacity-100" : "opacity-0"}`}
+                          sizes="(max-width: 1200px) 33vw, 400px"
+                          loading="lazy"
+                          onLoad={() =>
+                            setLoadedImages((current) => ({
+                              ...current,
+                              [item.id]: true,
+                            }))
+                          }
+                          onError={() =>
+                            setLoadedImages((current) => ({
+                              ...current,
+                              [item.id]: true,
+                            }))
+                          }
+                        />
+                      </>
                     ) : null;
                   })()}
                   <span className="font-semibold text-lg pointer-events-none absolute inset-0 flex items-center justify-center px-4 text-center text-foreground opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100">
