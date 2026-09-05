@@ -91,7 +91,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
       } else if (event.key === "Tab") {
         const focusableElements =
           dialogRef.current?.querySelectorAll<HTMLElement>(
-            'button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])',
+            'button:not([disabled]):not(.hidden), iframe, [tabindex]:not([tabindex="-1"])',
           );
 
         if (!focusableElements?.length) {
