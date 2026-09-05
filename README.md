@@ -2,9 +2,22 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Environment variables
+
+Copy `.env.example` to `.env.local` for local development. Add the same four values in Vercel under **Project Settings > Environment Variables** for Production (and Preview if preview deployments should use the app):
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+ADMIN_EMAIL=the_email_allowed_to_manage_the_gallery
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+```
+
+Use the Supabase anon key, never the service-role key. `NEXT_PUBLIC_` values are intentionally available to the browser; `ADMIN_EMAIL` and `IMAGEKIT_PRIVATE_KEY` stay server-only.
+
 ### Image uploads
 
-Admin image uploads use ImageKit for CDN delivery and automatic format and quality selection. Add these values to the server environment before using the upload control:
+Admin image uploads use ImageKit for CDN delivery and automatic format and quality selection:
 
 ```bash
 IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
@@ -41,6 +54,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this repository to GitHub, then import it from [Vercel](https://vercel.com/new).
+2. Select the Hobby plan and add the environment variables above before the first deployment.
+3. Deploy, then copy the production URL from Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+In Supabase, open **Authentication > URL Configuration**:
+
+- Set **Site URL** to the production origin, such as `https://portfolio.example.com` or the Vercel production URL.
+- Add `https://your-production-host/auth/callback` to **Redirect URLs**.
+- Keep `http://localhost:3000/auth/callback` for local development.
+- If using Vercel preview deployments, add the exact preview callback URLs you need. Avoid broad wildcard URLs unless you understand the security tradeoff.
+
+The app builds the sign-in callback from the current request origin, so no URL environment variable is needed. After changing auth settings or environment variables in Vercel, redeploy so the change is active.
+
+### Supabase activity check
+
+Supabase pauses inactive free projects. This repository includes a scheduled GitHub Action at `.github/workflows/keep-supabase-active.yml` that runs every three days and queries the health endpoint, which performs a read against Supabase.
+
+Add a GitHub repository secret named `SITE_URL` containing the production origin, for example `https://portfolio.example.com`. You can also run it manually from the workflow's **Run workflow** button. Scheduled GitHub Actions can be delayed or disabled after long periods without repository activity, so treat this as a convenience rather than a service-level uptime guarantee.
+
+For custom domains, add the domain in Vercel first, then update Supabase's Site URL and Redirect URLs to use that domain.

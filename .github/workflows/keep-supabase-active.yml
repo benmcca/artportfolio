@@ -1,0 +1,15 @@
+name: Keep Supabase active
+
+on:
+  schedule:
+    - cron: "0 9 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping production health endpoint
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+        run: curl --fail --silent --show-error --max-time 30 "${SITE_URL%/}/api/health"
