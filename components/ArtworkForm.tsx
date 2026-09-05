@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDown, ArrowUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Eye,
+  EyeOff,
+  Plus,
+  Star,
+  Trash2,
+} from "lucide-react";
 import {
   type ChangeEvent,
   type DragEvent,
@@ -112,7 +120,6 @@ export default function ArtworkForm({
         ...current,
         ...urls.map((url) => ({ type: "image" as const, url, visible: true })),
       ]);
-      if (!galleryImage) setGalleryImage(urls[0]);
     } catch (error) {
       setUploadError(
         error instanceof Error ? error.message : "Image upload failed.",
@@ -146,7 +153,6 @@ export default function ArtworkForm({
         ...current,
         { type: isYouTube ? "youtube" : "image", url, visible: true },
       ]);
-      if (!galleryImage && !isYouTube) setGalleryImage(url);
       setManualUrl("");
       setManualUrlError("");
     } catch {
@@ -162,6 +168,10 @@ export default function ArtworkForm({
       [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
       return next;
     });
+  }
+
+  function setGalleryMedia(item: MediaListItem) {
+    if (item.type === "image") setGalleryImage(item.url);
   }
 
   return (
@@ -258,7 +268,7 @@ export default function ArtworkForm({
           <button
             type="button"
             onClick={addManualUrl}
-            className="inline-flex items-center gap-2 rounded bg-sidebar-hover px-3 py-3 text-sm text-foreground transition hover:bg-sidebar-active"
+            className="inline-flex items-center gap-1.5 rounded bg-sidebar-hover px-2 py-2 text-sm text-foreground transition hover:bg-sidebar-active"
           >
             <Plus aria-hidden="true" size={16} />
             Add
@@ -294,7 +304,7 @@ export default function ArtworkForm({
             return (
               <div
                 key={`${item.url}-${index}`}
-                className={`flex w-full max-w-full min-w-0 items-center gap-3 overflow-hidden rounded border border-sidebar-border bg-surface p-2 ${!item.visible ? "opacity-55" : ""}`}
+                className={`flex w-full max-w-full min-w-0 items-center gap-1 overflow-hidden rounded border border-sidebar-border bg-surface p-2 ${!item.visible ? "opacity-55" : ""}`}
               >
                 <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-background">
                   {thumbnail ? (
@@ -322,9 +332,35 @@ export default function ArtworkForm({
                 </span>
                 <button
                   type="button"
+                  onClick={() => setGalleryMedia(item)}
+                  disabled={item.type === "youtube"}
+                  className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover disabled:cursor-not-allowed disabled:opacity-30"
+                  aria-label={
+                    item.type === "youtube"
+                      ? "Videos cannot be gallery images"
+                      : galleryImage === item.url
+                        ? "Gallery image selected"
+                        : "Set as gallery image"
+                  }
+                  title={
+                    item.type === "youtube"
+                      ? "Videos cannot be gallery images"
+                      : galleryImage === item.url
+                        ? "Gallery image"
+                        : "Set as gallery image"
+                  }
+                >
+                  <Star
+                    aria-hidden="true"
+                    size={16}
+                    fill={galleryImage === item.url ? "currentColor" : "none"}
+                  />
+                </button>
+                <button
+                  type="button"
                   onClick={() => moveMedia(index, -1)}
                   disabled={index === 0}
-                  className="rounded p-2 text-muted-foreground hover:bg-sidebar-hover disabled:opacity-30"
+                  className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover disabled:opacity-30"
                   aria-label="Move media up"
                 >
                   <ArrowUp aria-hidden="true" size={16} />
@@ -333,7 +369,7 @@ export default function ArtworkForm({
                   type="button"
                   onClick={() => moveMedia(index, 1)}
                   disabled={index === media.length - 1}
-                  className="rounded p-2 text-muted-foreground hover:bg-sidebar-hover disabled:opacity-30"
+                  className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover disabled:opacity-30"
                   aria-label="Move media down"
                 >
                   <ArrowDown aria-hidden="true" size={16} />
@@ -349,7 +385,7 @@ export default function ArtworkForm({
                       ),
                     )
                   }
-                  className="rounded p-2 text-muted-foreground hover:bg-sidebar-hover"
+                  className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover"
                   aria-label={item.visible ? "Hide media" : "Show media"}
                 >
                   {item.visible ? (
@@ -360,12 +396,13 @@ export default function ArtworkForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
+                    if (galleryImage === item.url) setGalleryImage("");
                     setMedia((current) =>
                       current.filter((_, entryIndex) => entryIndex !== index),
-                    )
-                  }
-                  className="rounded p-2 text-muted-foreground hover:bg-sidebar-hover"
+                    );
+                  }}
+                  className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover"
                   aria-label="Remove media"
                 >
                   <Trash2 aria-hidden="true" size={16} />
@@ -381,19 +418,7 @@ export default function ArtworkForm({
         )}
       </fieldset>
 
-      <label
-        className="block text-sm text-muted-foreground"
-        htmlFor="galleryImage"
-      >
-        Gallery image URL
-        <input
-          id="galleryImage"
-          name="galleryImage"
-          value={galleryImage}
-          onChange={(event) => setGalleryImage(event.target.value)}
-          className="mt-2 w-full rounded border border-sidebar-border bg-surface px-3 py-3 text-foreground outline-none focus:border-focus-ring focus:ring-2 focus:ring-focus-ring/30"
-        />
-      </label>
+      <input type="hidden" name="galleryImage" value={galleryImage} readOnly />
 
       <fieldset>
         <legend className="text-sm text-muted-foreground">Categories</legend>

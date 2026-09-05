@@ -81,6 +81,16 @@ export function validateArtwork(values: ArtworkFormValues): ArtworkFormState {
   if (values.images.length === 0) {
     fieldErrors.images = "Add at least one image or video URL.";
   }
+  if (
+    values.galleryImage &&
+    !values.images.some((media) =>
+      typeof media === "string"
+        ? media === values.galleryImage
+        : media.type === "image" && media.url === values.galleryImage,
+    )
+  ) {
+    fieldErrors.images = "Choose a gallery image from the media list.";
+  }
 
   return Object.keys(fieldErrors).length > 0 ? { fieldErrors } : {};
 }

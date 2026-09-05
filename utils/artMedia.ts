@@ -66,7 +66,7 @@ export function getGalleryImage(art: ArtWithMedia) {
   );
 
   return (
-    visibleImageMedia.find((media) =>
+    imageMedia.find((media) =>
       typeof media === "string"
         ? media === art.galleryImage
         : media.url === art.galleryImage,
