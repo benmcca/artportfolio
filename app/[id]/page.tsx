@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -17,6 +17,10 @@ export default async function ArtworkPage({
 }) {
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
+  const { data: userData } = await supabase.auth.getUser();
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const isAdmin =
+    !!adminEmail && userData.user?.email?.toLowerCase() === adminEmail;
   const { data, error } = await supabase
     .from("artwork")
     .select("*, artwork_categories(category_id)")
@@ -50,14 +54,26 @@ export default async function ArtworkPage({
   return (
     <main className="min-h-screen bg-background px-6 py-6 text-foreground">
       <div className="mx-auto w-[70vw] min-w-[700px] max-w-[1200px]">
-        <Link
-          href="/"
-          aria-label="Back to portfolio"
-          className="inline-flex items-center gap-2 rounded px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
-        >
-          <ArrowLeft aria-hidden="true" size={16} />
-          Back
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            href="/"
+            aria-label="Back to portfolio"
+            className="inline-flex items-center gap-2 rounded px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+          >
+            <ArrowLeft aria-hidden="true" size={16} />
+            Back
+          </Link>
+
+          {isAdmin && (
+            <Link
+              href={`/admin/artwork/${artwork.id}/edit`}
+              className="inline-flex items-center gap-2 rounded px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+            >
+              <Pencil aria-hidden="true" size={16} />
+              Edit
+            </Link>
+          )}
+        </div>
 
         <div className="mt-4 grid grid-cols-[60%_40%]">
           <ImageLightbox
