@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Roboto_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import { CategoryFilterProvider } from "../components/CategoryFilterContext";
 import Sidebar from "../components/Sidebar";
 import { createSupabaseServerClient } from "../utils/supabase/server";
 import type { ArtCategory } from "../utils/artwork";
 import "./globals.css";
 
-const robotoMono = Roboto_Mono({
+const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-roboto-mono",
+  weight: ["400", "700"],
+  variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     !!adminEmail && userData.user?.email?.toLowerCase() === adminEmail;
 
   return (
-    <html lang="en" className={`${robotoMono.variable} h-full antialiased`}>
+    <html lang="en" className={`${jetBrainsMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-background text-foreground">
         <CategoryFilterProvider categories={typedCategories}>
           <div className="flex min-h-screen">
