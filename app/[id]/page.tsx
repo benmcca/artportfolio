@@ -21,6 +21,7 @@ export default async function ArtworkPage({
     .from("artwork")
     .select("*, artwork_categories(category_id)")
     .eq("id", id)
+    .eq("visible", true)
     .maybeSingle();
 
   if (error) {
@@ -35,6 +36,7 @@ export default async function ArtworkPage({
         description: data.description,
         images: data.images as Artwork["images"],
         galleryImage: data.gallery_image ?? undefined,
+        visible: data.visible,
         categories: (data.artwork_categories as ArtworkCategoryRow[]).map(
           (category) => category.category_id,
         ),

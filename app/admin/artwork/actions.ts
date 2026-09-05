@@ -110,3 +110,26 @@ export async function deleteArtwork(artworkId: number) {
   if (error) throw new Error(error.message);
   redirect("/admin");
 }
+
+export async function toggleArtworkVisibility(artworkId: number) {
+  if (!Number.isInteger(artworkId) || artworkId <= 0) {
+    throw new Error("The artwork id is invalid.");
+  }
+
+  const supabase = await getAdminClient();
+  if (!supabase) throw new Error("You are not authorized to do that.");
+
+  const { data: artwork, error: fetchError } = await supabase
+    .from("artwork")
+    .select("visible")
+    .eq("id", artworkId)
+    .maybeSingle();
+  if (fetchError) throw new Error(fetchError.message);
+  if (!artwork) throw new Error("The artwork could not be found.");
+
+  const { error } = await supabase
+    .from("artwork")
+    .update({ visible: !artwork.visible })
+    .eq("id", artworkId);
+  if (error) throw new Error(error.message);
+}

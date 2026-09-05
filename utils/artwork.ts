@@ -7,6 +7,7 @@ export type Artwork = {
   description: string;
   images: ArtMedia[];
   galleryImage?: string;
+  visible: boolean;
   categories: number[];
 };
 

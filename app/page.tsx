@@ -8,7 +8,8 @@ export default async function Home() {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("artwork")
-    .select("*, artwork_categories(category_id)");
+    .select("*, artwork_categories(category_id)")
+    .eq("visible", true);
 
   if (error) {
     throw new Error(`Unable to load artwork: ${error.message}`);
@@ -21,6 +22,7 @@ export default async function Home() {
     description: item.description,
     images: item.images as Artwork["images"],
     galleryImage: item.gallery_image ?? undefined,
+    visible: item.visible,
     categories: (item.artwork_categories as ArtworkCategoryRow[]).map(
       (category) => category.category_id,
     ),

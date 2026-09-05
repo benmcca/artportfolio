@@ -22,7 +22,7 @@ export default async function AdminPage() {
   const { data: artworkRows, error: artworkError } = await supabase
     .from("artwork")
     .select(
-      "id, title, date, images, gallery_image, artwork_categories(category:categories(name))",
+      "id, title, date, images, gallery_image, visible, artwork_categories(category:categories(name))",
     )
     .order("date", { ascending: false });
 
@@ -46,6 +46,7 @@ export default async function AdminPage() {
     date: item.date,
     images: item.images as Artwork["images"],
     galleryImage: item.gallery_image ?? undefined,
+    visible: item.visible,
     categories: (item.artwork_categories as ArtworkCategoryRow[]).flatMap(
       ({ category }) =>
         Array.isArray(category)

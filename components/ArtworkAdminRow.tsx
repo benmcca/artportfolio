@@ -2,10 +2,13 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import type { KeyboardEvent } from "react";
 import { useState } from "react";
-import { deleteArtwork } from "../app/admin/artwork/actions";
+import {
+  deleteArtwork,
+  toggleArtworkVisibility,
+} from "../app/admin/artwork/actions";
 import { getGalleryImage } from "../utils/artMedia";
 import type { ArtMedia } from "../utils/artMedia";
 
@@ -15,6 +18,7 @@ type ArtworkAdminRowData = {
   date: string;
   images: ArtMedia[];
   galleryImage?: string;
+  visible: boolean;
   categories: string[];
 };
 
@@ -26,6 +30,8 @@ export default function ArtworkAdminRow({
   const router = useRouter();
   const [isDeleteExpanded, setIsDeleteExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isTogglingVisibility, setIsTogglingVisibility] = useState(false);
+  const [isVisible, setIsVisible] = useState(artwork.visible);
   const galleryImage = getGalleryImage(artwork);
   const imageUrl =
     typeof galleryImage === "string" ? galleryImage : galleryImage?.url;
@@ -49,6 +55,20 @@ export default function ArtworkAdminRow({
 
     setIsDeleting(true);
     await deleteArtwork(artwork.id);
+  }
+
+  async function handleToggleVisibility(
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) {
+    event.stopPropagation();
+    setIsTogglingVisibility(true);
+    try {
+      await toggleArtworkVisibility(artwork.id);
+      setIsVisible((currentVisibility) => !currentVisibility);
+      router.refresh();
+    } finally {
+      setIsTogglingVisibility(false);
+    }
   }
 
   return (
@@ -91,6 +111,20 @@ export default function ArtworkAdminRow({
         </time>
       </div>
       <div className="flex flex-wrap gap-1">
+        <button
+          type="button"
+          aria-label={`${isVisible ? "Hide" : "Show"} ${artwork.title}`}
+          title={`${isVisible ? "Hide" : "Show"} ${artwork.title}`}
+          disabled={isTogglingVisibility}
+          onClick={handleToggleVisibility}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isVisible ? (
+            <Eye aria-hidden="true" size={16} />
+          ) : (
+            <EyeOff aria-hidden="true" size={16} />
+          )}
+        </button>
         <button
           type="button"
           aria-label={`Edit ${artwork.title}`}
