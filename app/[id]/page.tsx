@@ -52,8 +52,8 @@ export default async function ArtworkPage({
   }
 
   return (
-    <main className="min-h-screen bg-background px-6 py-6 text-foreground">
-      <div className="mx-auto w-[70vw] min-w-[700px] max-w-[1200px]">
+    <main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-6">
+      <div className="mx-auto w-full min-w-0 max-w-[1200px]">
         <div className="flex items-center justify-between">
           <Link
             href="/"
@@ -75,13 +75,13 @@ export default async function ArtworkPage({
           )}
         </div>
 
-        <div className="mt-4 grid grid-cols-[60%_40%]">
+        <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[60%_40%] lg:gap-0">
           <ImageLightbox
             images={getVisibleArtMedia(artwork)}
             title={artwork.title}
           />
           <StickyTextPanel>
-            <div className="ml-6">
+            <div className="lg:ml-6">
               <h1 className="text-3xl font-bold text-foreground">
                 {artwork.title}
                 <span className="ml-3 text-xl font-normal italic text-foreground">

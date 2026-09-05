@@ -34,6 +34,7 @@
 
 html {
   scrollbar-gutter: stable;
+  overflow-x: clip;
 }
 
 body {
@@ -41,6 +42,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-jetbrains-mono), monospace;
   letter-spacing: 0.02em;
+  overflow-x: clip;
 }
 
 ::view-transition-group(*) {

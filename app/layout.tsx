@@ -41,9 +41,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${jetBrainsMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-background text-foreground">
         <CategoryFilterProvider categories={typedCategories}>
-          <div className="flex min-h-screen">
+          <div className="flex min-h-screen flex-col lg:flex-row">
             <Sidebar categories={typedCategories} isAdmin={isAdmin} />
-            <div className="flex-1">{children}</div>
+            <div className="min-w-0 flex-1">{children}</div>
           </div>
         </CategoryFilterProvider>
       </body>

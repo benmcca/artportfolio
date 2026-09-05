@@ -27,12 +27,12 @@ export default function Gallery({ artwork }: { artwork: Artwork[] }) {
     );
 
   return (
-    <main className="min-h-screen bg-background px-6 py-10 text-foreground">
-      <div className="mx-auto w-[60vw] min-w-[700px] max-w-[1200px]">
+    <main className="min-h-screen bg-background px-6 py-4 text-foreground lg:py-10">
+      <div className="mx-auto w-full min-w-0 max-w-[1200px]">
         <h1 className="mb-8 text-4xl font-bold tracking-[0.08em] text-foreground capitalize">
           {heading}
         </h1>
-        <div className="grid grid-cols-3 gap-x-6 gap-y-6">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
           {filteredArtwork.map((item) => (
             <article
               key={item.id}

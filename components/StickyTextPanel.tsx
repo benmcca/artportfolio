@@ -42,7 +42,7 @@ export default function StickyTextPanel({ children }: { children: ReactNode }) {
   return (
     <div
       ref={panelRef}
-      className="sticky self-start"
+      className="self-start lg:sticky"
       style={{ top: topOffset }}
     >
       {children}
