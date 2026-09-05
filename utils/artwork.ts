@@ -13,4 +13,5 @@ export type Artwork = {
 export type ArtCategory = {
   id: number;
   name: string;
+  sort_order: number;
 };

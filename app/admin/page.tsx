@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import ArtworkAdminRow from "../../components/ArtworkAdminRow";
+import CategoryManager from "../../components/CategoryManager";
 import { createSupabaseServerClient } from "../../utils/supabase/server";
-import type { Artwork } from "../../utils/artwork";
+import type { Artwork, ArtCategory } from "../../utils/artwork";
 
 type ArtworkCategoryRow = {
   category: { name: string } | { name: string }[] | null;
@@ -26,6 +28,16 @@ export default async function AdminPage() {
 
   if (artworkError) {
     throw new Error(`Unable to load artwork: ${artworkError.message}`);
+  }
+
+  const { data: categoryRows, error: categoryError } = await supabase
+    .from("categories")
+    .select("id, name, sort_order")
+    .order("sort_order", { ascending: true })
+    .order("id", { ascending: true });
+
+  if (categoryError) {
+    throw new Error(`Unable to load categories: ${categoryError.message}`);
   }
 
   const artwork = artworkRows.map((item) => ({
@@ -53,17 +65,32 @@ export default async function AdminPage() {
         <p className="mt-4 text-sm text-muted-foreground">
           Signed in as {data.user.email}
         </p>
-        <div className="mt-10">
-          <h2 className="text-xl font-bold text-foreground">Manage artwork</h2>
-          <div className="mt-4">
-            {artwork.map((item, index) => (
-              <div key={item.id}>
-                {index > 0 && (
-                  <div className="my-2 border-t border-sidebar-border" />
-                )}
-                <ArtworkAdminRow artwork={item} />
-              </div>
-            ))}
+        <div className="mt-10 grid gap-10 lg:grid-cols-10">
+          <section className="lg:col-span-7">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-xl font-bold text-foreground">
+                Manage portfolio
+              </h2>
+              <Link
+                href="/admin/artwork/new"
+                className="rounded bg-sidebar-active px-3 py-2 text-sm text-sidebar-active-foreground transition-colors hover:bg-sidebar-active/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+              >
+                Add artwork
+              </Link>
+            </div>
+            <div className="mt-4">
+              {artwork.map((item, index) => (
+                <div key={item.id}>
+                  {index > 0 && (
+                    <div className="my-2 border-t border-sidebar-border" />
+                  )}
+                  <ArtworkAdminRow artwork={item} />
+                </div>
+              ))}
+            </div>
+          </section>
+          <div className="lg:col-span-3">
+            <CategoryManager categories={categoryRows as ArtCategory[]} />
           </div>
         </div>
       </div>

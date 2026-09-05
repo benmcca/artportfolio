@@ -22,8 +22,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const supabase = await createSupabaseServerClient();
   const { data: categories, error } = await supabase
     .from("categories")
-    .select("id, name")
-    .order("id");
+    .select("id, name, sort_order, artwork_categories!inner(artwork_id)")
+    .order("sort_order", { ascending: true })
+    .order("id", { ascending: true });
 
   if (error) {
     throw new Error(`Unable to load categories: ${error.message}`);
