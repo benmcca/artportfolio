@@ -73,7 +73,7 @@ export default function Sidebar({
           rel="noreferrer"
           className="block w-full rounded px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-sidebar-hover hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
         >
-          About Me
+          About me
         </a>
       </div>
 
