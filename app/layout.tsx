@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
   const { data: categories, error } = await supabase
     .from("categories")
     .select("id, name")
@@ -30,13 +30,17 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   }
 
   const typedCategories = categories as ArtCategory[];
+  const { data: userData } = await supabase.auth.getUser();
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const isAdmin =
+    !!adminEmail && userData.user?.email?.toLowerCase() === adminEmail;
 
   return (
     <html lang="en" className={`${robotoMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-background text-foreground">
         <CategoryFilterProvider>
           <div className="flex min-h-screen">
-            <Sidebar categories={typedCategories} />
+            <Sidebar categories={typedCategories} isAdmin={isAdmin} />
             <div className="flex-1">{children}</div>
           </div>
         </CategoryFilterProvider>

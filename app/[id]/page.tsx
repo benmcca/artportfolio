@@ -16,7 +16,7 @@ export default async function ArtworkPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = createSupabaseServerClient();
+  const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("artwork")
     .select("*, artwork_categories(category_id)")
