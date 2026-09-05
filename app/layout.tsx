@@ -39,7 +39,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${robotoMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-background text-foreground">
-        <CategoryFilterProvider>
+        <CategoryFilterProvider categories={typedCategories}>
           <div className="flex min-h-screen">
             <Sidebar categories={typedCategories} isAdmin={isAdmin} />
             <div className="flex-1">{children}</div>

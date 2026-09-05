@@ -1,11 +1,19 @@
 "use client";
 
-import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { flushSync } from "react-dom";
+import type { ArtCategory } from "../utils/artwork";
 
 type CategoryFilterContextValue = {
   selectedCategory: number | "all";
   setSelectedCategory: (category: number | "all") => void;
+  categories: ArtCategory[];
 };
 
 type ViewTransitionDocument = Document & {
@@ -21,7 +29,13 @@ const CategoryFilterContext = createContext<
   CategoryFilterContextValue | undefined
 >(undefined);
 
-export function CategoryFilterProvider({ children }: { children: ReactNode }) {
+export function CategoryFilterProvider({
+  children,
+  categories,
+}: {
+  children: ReactNode;
+  categories: ArtCategory[];
+}) {
   const [selectedCategory, setSelectedCategory] = useState<number | "all">(
     "all",
   );
@@ -65,6 +79,7 @@ export function CategoryFilterProvider({ children }: { children: ReactNode }) {
       value={{
         selectedCategory,
         setSelectedCategory: updateSelectedCategory,
+        categories,
       }}
     >
       {children}
