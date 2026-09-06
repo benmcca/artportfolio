@@ -85,6 +85,9 @@ export default function ArtworkForm({
   const [uploadError, setUploadError] = useState("");
   const [manualUrl, setManualUrl] = useState("");
   const [manualUrlError, setManualUrlError] = useState("");
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState<number | null>(
+    null,
+  );
 
   async function uploadFiles(files: FileList | File[]) {
     const imageFiles = Array.from(files).filter((file) =>
@@ -168,6 +171,29 @@ export default function ArtworkForm({
       [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
       return next;
     });
+    setSelectedMediaIndex(null);
+  }
+
+  function handleMediaClick(index: number) {
+    if (selectedMediaIndex === null) {
+      setSelectedMediaIndex(index);
+      return;
+    }
+
+    if (selectedMediaIndex === index) {
+      setSelectedMediaIndex(null);
+      return;
+    }
+
+    setMedia((current) => {
+      const targetIndex =
+        selectedMediaIndex < index ? index - 1 : index;
+      const next = [...current];
+      const [selectedMedia] = next.splice(selectedMediaIndex, 1);
+      next.splice(targetIndex, 0, selectedMedia);
+      return next;
+    });
+    setSelectedMediaIndex(null);
   }
 
   function setGalleryMedia(item: MediaListItem) {
@@ -304,25 +330,42 @@ export default function ArtworkForm({
             return (
               <div
                 key={`${item.url}-${index}`}
-                className={`flex w-full max-w-full min-w-0 items-center gap-1 overflow-hidden rounded border border-sidebar-border bg-surface p-2 ${!item.visible ? "opacity-55" : ""}`}
+                onClick={() => handleMediaClick(index)}
+                onKeyDown={(event) => {
+                  if (event.target !== event.currentTarget) return;
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleMediaClick(index);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={
+                  selectedMediaIndex === null
+                    ? `Select media ${index + 1} to move`
+                    : selectedMediaIndex === index
+                      ? `Cancel moving media ${index + 1}`
+                      : `Move selected media before media ${index + 1}`
+                }
+                className={`flex w-full max-w-full min-w-0 cursor-pointer items-center gap-1 overflow-hidden rounded border bg-surface p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${selectedMediaIndex === index ? "border-focus-ring bg-sidebar-active/30" : "border-sidebar-border"} ${!item.visible ? "opacity-55" : ""}`}
               >
                 <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-background">
-                  {thumbnail ? (
-                    <div
-                      aria-hidden="true"
-                      className="h-full w-full bg-cover bg-center"
-                      style={{ backgroundImage: `url("${thumbnail}")` }}
-                    />
-                  ) : (
-                    <span className="flex h-full items-center justify-center text-xs">
-                      Video
-                    </span>
-                  )}
-                  {item.type === "youtube" && (
-                    <span className="absolute bottom-1 left-1 rounded bg-black/75 px-1 text-[10px] text-white">
-                      Video
-                    </span>
-                  )}
+                    {thumbnail ? (
+                      <div
+                        aria-hidden="true"
+                        className="h-full w-full bg-cover bg-center"
+                        style={{ backgroundImage: `url("${thumbnail}")` }}
+                      />
+                    ) : (
+                      <span className="flex h-full items-center justify-center text-xs">
+                        Video
+                      </span>
+                    )}
+                    {item.type === "youtube" && (
+                      <span className="absolute bottom-1 left-1 rounded bg-black/75 px-1 text-[10px] text-white">
+                        Video
+                      </span>
+                    )}
                 </div>
                 <span
                   className="block w-0 min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm text-muted-foreground"
@@ -332,7 +375,10 @@ export default function ArtworkForm({
                 </span>
                 <button
                   type="button"
-                  onClick={() => setGalleryMedia(item)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setGalleryMedia(item);
+                  }}
                   disabled={item.type === "youtube"}
                   className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover disabled:cursor-not-allowed disabled:opacity-30"
                   aria-label={
@@ -358,7 +404,10 @@ export default function ArtworkForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => moveMedia(index, -1)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    moveMedia(index, -1);
+                  }}
                   disabled={index === 0}
                   className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover disabled:opacity-30"
                   aria-label="Move media up"
@@ -367,7 +416,10 @@ export default function ArtworkForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => moveMedia(index, 1)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    moveMedia(index, 1);
+                  }}
                   disabled={index === media.length - 1}
                   className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover disabled:opacity-30"
                   aria-label="Move media down"
@@ -376,15 +428,16 @@ export default function ArtworkForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
+                  onClick={(event) => {
+                    event.stopPropagation();
                     setMedia((current) =>
                       current.map((entry, entryIndex) =>
                         entryIndex === index
                           ? { ...entry, visible: !entry.visible }
                           : entry,
                       ),
-                    )
-                  }
+                    );
+                  }}
                   className="rounded p-1 text-muted-foreground hover:bg-sidebar-hover"
                   aria-label={item.visible ? "Hide media" : "Show media"}
                 >
@@ -396,7 +449,8 @@ export default function ArtworkForm({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.stopPropagation();
                     if (galleryImage === item.url) setGalleryImage("");
                     setMedia((current) =>
                       current.filter((_, entryIndex) => entryIndex !== index),
