@@ -108,20 +108,38 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
           event.preventDefault();
           firstElement.focus();
         }
+      } else if (
+        event.key === " " ||
+        event.key === "PageUp" ||
+        event.key === "PageDown" ||
+        event.key === "Home" ||
+        event.key === "End"
+      ) {
+        event.preventDefault();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
+    const preventDocumentScroll = (event: WheelEvent | TouchEvent) => {
+      event.preventDefault();
+    };
+    const scrollListenerOptions = { capture: true, passive: false };
+    document.addEventListener(
+      "wheel",
+      preventDocumentScroll,
+      scrollListenerOptions,
+    );
+    document.addEventListener(
+      "touchmove",
+      preventDocumentScroll,
+      scrollListenerOptions,
+    );
 
     return () => {
       cancelAnimationFrame(animationFrame);
       document.removeEventListener("keydown", handleKeyDown);
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
+      document.removeEventListener("wheel", preventDocumentScroll, true);
+      document.removeEventListener("touchmove", preventDocumentScroll, true);
     };
   }, [activeIndex, images.length]);
 
@@ -307,6 +325,8 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
               closeLightbox();
             }
           }}
+          onTouchMove={(event) => event.preventDefault()}
+          onWheel={(event) => event.preventDefault()}
         >
           <button
             ref={closeButtonRef}
