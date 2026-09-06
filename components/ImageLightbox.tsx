@@ -112,12 +112,16 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
     };
 
     document.addEventListener("keydown", handleKeyDown);
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     return () => {
       cancelAnimationFrame(animationFrame);
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
     };
   }, [activeIndex, images.length]);
 
