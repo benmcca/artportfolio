@@ -35,7 +35,6 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
-  const touchStartXRef = useRef<number | null>(null);
 
   const openLightbox = (imageIndex: number) => {
     setIsLightboxVisible(false);
@@ -124,38 +123,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
 
   return (
     <>
-      <div
-        className="lg:hidden"
-        onTouchStart={(event) => {
-          if (images.length < 2) {
-            return;
-          }
-          touchStartXRef.current = event.changedTouches[0]?.clientX ?? null;
-        }}
-        onTouchEnd={(event) => {
-          if (images.length < 2) {
-            return;
-          }
-          const touchStartX = touchStartXRef.current;
-          const touchEndX = event.changedTouches[0]?.clientX;
-          touchStartXRef.current = null;
-
-          if (touchStartX === null || touchEndX === undefined) {
-            return;
-          }
-
-          const swipeDistance = touchEndX - touchStartX;
-          if (Math.abs(swipeDistance) < 40 || images.length < 2) {
-            return;
-          }
-
-          if (swipeDistance > 0) {
-            showPreviousCarouselItem();
-          } else {
-            showNextCarouselItem();
-          }
-        }}
-      >
+      <div className="lg:hidden">
         {(() => {
           const media = images[carouselIndex];
           const imageUrl = typeof media === "string" ? media : media?.url;
