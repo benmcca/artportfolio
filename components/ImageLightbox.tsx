@@ -343,7 +343,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                 />
               </div>
             ) : (
-              <div className="relative max-h-[calc(100%_-_4rem)] max-w-full lg:h-full lg:max-h-[calc(100%_-_5rem)] lg:max-w-[calc(100%_-_10rem)]">
+              <div className="relative flex max-h-[calc(100%_-_4rem)] max-w-full items-center justify-center lg:max-h-[calc(100dvh_-_8rem)] lg:max-w-[calc(100%_-_10rem)]">
                 {!loadedImages[
                   typeof images[activeIndex] === "string"
                     ? images[activeIndex]
@@ -368,7 +368,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                   width={1600}
                   height={1600}
                   sizes="90vw"
-                  className={`h-auto max-h-full max-w-full object-contain transition-opacity duration-300 lg:h-full lg:max-h-[calc(100%_-_5rem)] lg:max-w-[calc(100%_-_10rem)] ${loadedImages[typeof images[activeIndex] === "string" ? images[activeIndex] : images[activeIndex].url] ? "opacity-100" : "opacity-0"}`}
+                  className={`block h-auto max-h-full max-w-full object-contain transition-opacity duration-300 lg:max-h-[calc(100dvh_-_8rem)] lg:max-w-[calc(100%_-_10rem)] ${loadedImages[typeof images[activeIndex] === "string" ? images[activeIndex] : images[activeIndex].url] ? "opacity-100" : "opacity-0"}`}
                   onLoad={() =>
                     setLoadedImages((current) => ({
                       ...current,
