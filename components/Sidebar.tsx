@@ -29,6 +29,11 @@ export default function Sidebar({
     }
   }
 
+  function handleHomeSelect() {
+    setSelectedCategory("all");
+    setIsMenuOpen(false);
+  }
+
   function handleAdminSelect() {
     setSelectedCategory("all");
     setIsMenuOpen(false);
@@ -39,9 +44,14 @@ export default function Sidebar({
     <>
       <div className="h-20 shrink-0 lg:hidden" aria-hidden="true" />
       <aside className="fixed left-1/2 top-4 z-40 box-border flex w-[calc(100%_-_2rem)] max-w-[calc(100vw_-_2rem)] -translate-x-1/2 flex-col rounded-lg border border-sidebar-border bg-sidebar p-4 shadow-lg shadow-black/50 lg:sticky lg:left-auto lg:top-4 lg:mx-0 lg:ml-4 lg:h-[calc(100vh-2rem)] lg:w-60 lg:max-w-none lg:translate-x-0 lg:p-5">
-        <div className="text-2xl font-bold tracking-[0.1em] text-foreground">
+        <Link
+          href="/"
+          onClick={handleHomeSelect}
+          aria-label="Go to portfolio home"
+          className="text-2xl font-bold tracking-[0.1em] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+        >
           ben mccabe
-        </div>
+        </Link>
 
         <button
           type="button"
