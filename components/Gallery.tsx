@@ -4,7 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useCategoryFilter } from "./CategoryFilterContext";
-import { getGalleryImage } from "../utils/artMedia";
+import {
+  getGalleryImage,
+  getImageKitBlurUrl,
+  getImageKitImageUrl,
+  isImageKitUrl,
+} from "../utils/artMedia";
 import type { Artwork } from "../utils/artwork";
 
 export default function Gallery({ artwork }: { artwork: Artwork[] }) {
@@ -43,25 +48,34 @@ export default function Gallery({ artwork }: { artwork: Artwork[] }) {
                 <div className="relative aspect-square overflow-hidden rounded">
                   {(() => {
                     const galleryImage = getGalleryImage(item);
+                    const imageUrl =
+                      typeof galleryImage === "string"
+                        ? galleryImage
+                        : galleryImage?.url;
+                    const isImageKitImage = imageUrl
+                      ? isImageKitUrl(imageUrl)
+                      : false;
 
-                    return galleryImage ? (
+                    return galleryImage && imageUrl ? (
                       <>
-                        {!loadedImages[item.id] && (
+                        {!loadedImages[item.id] && !isImageKitImage && (
                           <div
                             className="absolute inset-0 animate-pulse bg-surface"
                             aria-hidden="true"
                           />
                         )}
                         <Image
-                          src={
-                            typeof galleryImage === "string"
-                              ? galleryImage
-                              : galleryImage.url
-                          }
+                          src={getImageKitImageUrl(imageUrl, 800)}
                           alt={item.title}
                           fill
-                          className={`block object-cover transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50 ${loadedImages[item.id] ? "opacity-100" : "opacity-0"}`}
+                          className={`block object-cover transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:brightness-50 ${loadedImages[item.id] || isImageKitImage ? "opacity-100" : "opacity-0"}`}
                           sizes="(max-width: 1200px) 33vw, 400px"
+                          placeholder={isImageKitImage ? "blur" : "empty"}
+                          blurDataURL={
+                            isImageKitImage
+                              ? getImageKitBlurUrl(imageUrl)
+                              : undefined
+                          }
                           loading="lazy"
                           onLoad={() =>
                             setLoadedImages((current) => ({

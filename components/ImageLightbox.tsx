@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, LoaderCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type {
   CSSProperties,
@@ -9,7 +9,13 @@ import type {
   MouseEvent,
   SetStateAction,
 } from "react";
-import { type ArtMedia, getYouTubeVideoId } from "../utils/artMedia";
+import {
+  type ArtMedia,
+  getImageKitBlurUrl,
+  getImageKitImageUrl,
+  getYouTubeVideoId,
+  isImageKitUrl,
+} from "../utils/artMedia";
 
 type ImageLightboxProps = {
   images: ArtMedia[];
@@ -75,6 +81,12 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isLightboxVisible, setIsLightboxVisible] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [loadedCarouselImages, setLoadedCarouselImages] = useState<
+    Record<string, boolean>
+  >({});
+  const [loadedLightboxImages, setLoadedLightboxImages] = useState<
+    Record<string, boolean>
+  >({});
   const [mediaRatios, setMediaRatios] = useState<MediaRatioMap>({});
   const remainingDesktopMediaLoaded = images
     .slice(1)
@@ -194,6 +206,8 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
             );
           }
 
+          const isImageKitImage = isImageKitUrl(imageUrl);
+
           return (
             <button
               type="button"
@@ -204,15 +218,16 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
               }}
               aria-label={`Enlarge ${title}, media ${carouselIndex + 1}`}
             >
-              {!loadedImages[imageUrl] && (
-                <div
-                  className="absolute inset-0 animate-pulse bg-surface"
+              {!loadedCarouselImages[imageUrl] && (
+                <LoaderCircle
+                  className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 animate-spin text-foreground"
+                  size={32}
                   aria-hidden="true"
                 />
               )}
               <Image
                 key={imageUrl}
-                src={imageUrl}
+                src={getImageKitImageUrl(imageUrl, 1600)}
                 alt={
                   carouselIndex === 0
                     ? title
@@ -220,15 +235,19 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                 }
                 width={800}
                 height={800}
-                className={`${images.length > 1 ? "h-full object-contain" : "h-auto"} w-full transition-opacity duration-500 ${loadedImages[imageUrl] ? "opacity-100" : "opacity-0"}`}
+                className={`${images.length > 1 ? "h-full object-contain" : "h-auto"} w-full transition-opacity duration-500 ${loadedCarouselImages[imageUrl] ? "opacity-100" : "opacity-0"}`}
+                placeholder={isImageKitImage ? "blur" : "empty"}
+                blurDataURL={
+                  isImageKitImage ? getImageKitBlurUrl(imageUrl) : undefined
+                }
                 onLoad={() =>
-                  setLoadedImages((current) => ({
+                  setLoadedCarouselImages((current) => ({
                     ...current,
                     [imageUrl]: true,
                   }))
                 }
                 onError={() =>
-                  setLoadedImages((current) => ({
+                  setLoadedCarouselImages((current) => ({
                     ...current,
                     [imageUrl]: true,
                   }))
@@ -374,14 +393,15 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                 />
               </div>
             ) : (
-              <div className="relative flex max-h-[calc(100%_-_4rem)] max-w-full items-center justify-center lg:max-h-[calc(100dvh_-_8rem)] lg:max-w-[calc(100%_-_10rem)]">
-                {!loadedImages[
+              <div className="relative flex h-[min(80dvh,900px)] w-[min(90vw,1200px)] items-center justify-center">
+                {!loadedLightboxImages[
                   typeof images[activeIndex] === "string"
                     ? images[activeIndex]
                     : images[activeIndex].url
                 ] && (
-                  <div
-                    className="absolute inset-0 animate-pulse rounded bg-surface"
+                  <LoaderCircle
+                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 animate-spin text-foreground"
+                    size={32}
                     aria-hidden="true"
                   />
                 )}
@@ -404,9 +424,32 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                   width={1600}
                   height={1600}
                   sizes="90vw"
-                  className={`block h-auto max-h-full max-w-full object-contain transition-opacity duration-300 lg:max-h-[calc(100dvh_-_8rem)] lg:max-w-[calc(100%_-_10rem)] ${loadedImages[typeof images[activeIndex] === "string" ? images[activeIndex] : images[activeIndex].url] ? "opacity-100" : "opacity-0"}`}
+                  unoptimized
+                  className={`block h-auto max-h-full max-w-full object-contain transition-opacity duration-300 lg:max-h-[calc(100dvh_-_8rem)] lg:max-w-[calc(100%_-_10rem)] ${loadedLightboxImages[typeof images[activeIndex] === "string" ? images[activeIndex] : images[activeIndex].url] ? "opacity-100" : "opacity-0"}`}
+                  placeholder={
+                    isImageKitUrl(
+                      typeof images[activeIndex] === "string"
+                        ? images[activeIndex]
+                        : images[activeIndex].url,
+                    )
+                      ? "blur"
+                      : "empty"
+                  }
+                  blurDataURL={
+                    isImageKitUrl(
+                      typeof images[activeIndex] === "string"
+                        ? images[activeIndex]
+                        : images[activeIndex].url,
+                    )
+                      ? getImageKitBlurUrl(
+                          typeof images[activeIndex] === "string"
+                            ? images[activeIndex]
+                            : images[activeIndex].url,
+                        )
+                      : undefined
+                  }
                   onLoad={() =>
-                    setLoadedImages((current) => ({
+                    setLoadedLightboxImages((current) => ({
                       ...current,
                       [typeof images[activeIndex] === "string"
                         ? images[activeIndex]
@@ -414,7 +457,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                     }))
                   }
                   onError={() =>
-                    setLoadedImages((current) => ({
+                    setLoadedLightboxImages((current) => ({
                       ...current,
                       [typeof images[activeIndex] === "string"
                         ? images[activeIndex]
@@ -500,6 +543,8 @@ function DesktopMediaItem({
   onOpen: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const mediaUrl = getMediaUrl(media);
+  const isImageKitImage = isImageKitUrl(mediaUrl);
+  const displayMediaUrl = getImageKitImageUrl(mediaUrl, 1600);
   const mediaAlt =
     mediaIndex === 0 ? title : `${title}, media ${mediaIndex + 1}`;
   const ratio = isYouTubeMedia(media) ? 16 / 9 : undefined;
@@ -532,17 +577,20 @@ function DesktopMediaItem({
       onClick={onOpen}
       aria-label={`Enlarge ${mediaAlt}`}
     >
-      {!shouldReveal && (
+      {!shouldReveal && !isImageKitImage && (
         <div
           className="absolute inset-0 animate-pulse bg-surface"
           aria-hidden="true"
         />
       )}
       <Image
-        src={mediaUrl}
+        src={displayMediaUrl}
         alt={mediaAlt}
         fill
-        className={`object-cover transition-opacity duration-500 ${shouldReveal ? "opacity-100" : "opacity-0"}`}
+        className={`object-cover transition-opacity duration-500 ${shouldReveal || isImageKitImage ? "opacity-100" : "opacity-0"}`}
+        sizes="(max-width: 1024px) 60vw, 720px"
+        placeholder={isImageKitImage ? "blur" : "empty"}
+        blurDataURL={isImageKitImage ? getImageKitBlurUrl(mediaUrl) : undefined}
         onLoad={(event) => {
           setLoadedImages((current) => ({ ...current, [mediaUrl]: true }));
           setMediaRatios((current) => ({

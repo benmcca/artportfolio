@@ -19,6 +19,43 @@ export type ArtWithMedia = {
   galleryImage?: string;
 };
 
+function addImageKitTransform(url: string, transform: string) {
+  let parsedUrl: URL;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    return url;
+  }
+
+  if (parsedUrl.hostname !== "ik.imagekit.io") {
+    return url;
+  }
+
+  const existingTransform = parsedUrl.searchParams.get("tr");
+  parsedUrl.searchParams.set(
+    "tr",
+    [existingTransform, transform].filter(Boolean).join(","),
+  );
+  return parsedUrl.toString();
+}
+
+export function isImageKitUrl(url: string) {
+  try {
+    return new URL(url).hostname === "ik.imagekit.io";
+  } catch {
+    return false;
+  }
+}
+
+export function getImageKitImageUrl(url: string, width: number) {
+  return addImageKitTransform(url, `w-${width}`);
+}
+
+export function getImageKitBlurUrl(url: string) {
+  return addImageKitTransform(url, "w-24,q-20,bl-10");
+}
+
 export function getYouTubeVideoId(url: string) {
   let parsedUrl: URL;
 
