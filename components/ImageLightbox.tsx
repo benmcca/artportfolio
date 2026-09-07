@@ -211,6 +211,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                 />
               )}
               <Image
+                key={imageUrl}
                 src={imageUrl}
                 alt={
                   carouselIndex === 0
