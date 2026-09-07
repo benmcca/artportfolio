@@ -3,6 +3,12 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type {
+  CSSProperties,
+  Dispatch,
+  MouseEvent,
+  SetStateAction,
+} from "react";
 import { type ArtMedia, getYouTubeVideoId } from "../utils/artMedia";
 
 type ImageLightboxProps = {
@@ -27,11 +33,52 @@ function getYouTubeEmbedUrl(media: Extract<ArtMedia, { type: "youtube" }>) {
   return `https://www.youtube.com/embed/${videoId}${shareId ? `?si=${shareId}` : ""}`;
 }
 
+type MediaRatioMap = Record<string, number>;
+
+function getMediaUrl(media: ArtMedia) {
+  return typeof media === "string" ? media : media.url;
+}
+
+function isMediaLoaded(media: ArtMedia, loadedImages: Record<string, boolean>) {
+  return isYouTubeMedia(media) || loadedImages[getMediaUrl(media)] === true;
+}
+
+function getDesktopRows(images: ArtMedia[], mediaRatios: MediaRatioMap) {
+  const rows: ArtMedia[][] = [];
+  let remainingImages = images.slice(1);
+
+  while (remainingImages.length > 0) {
+    const rowSize = 2;
+    rows.push(remainingImages.slice(0, rowSize));
+    remainingImages = remainingImages.slice(rowSize);
+  }
+
+  return rows.map((row) => {
+    const ratios = row.map((media) => {
+      if (isYouTubeMedia(media)) {
+        return 16 / 9;
+      }
+
+      return mediaRatios[getMediaUrl(media)] ?? 1;
+    });
+    const ratioTotal = ratios.reduce((total, ratio) => total + ratio, 0);
+
+    return row.map((media, index) => ({
+      media,
+      width: `calc((100% - ${(row.length - 1) * 8}px) * ${ratios[index] / ratioTotal})`,
+    }));
+  });
+}
+
 export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isLightboxVisible, setIsLightboxVisible] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [mediaRatios, setMediaRatios] = useState<MediaRatioMap>({});
+  const remainingDesktopMediaLoaded = images
+    .slice(1)
+    .every((media) => isMediaLoaded(media, loadedImages));
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
@@ -216,68 +263,51 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
       </div>
 
       <div className="hidden space-y-2 lg:block">
-        {images.map((media, mediaIndex) => {
-          const mediaAlt =
-            mediaIndex === 0 ? title : `${title}, media ${mediaIndex + 1}`;
-          const imageUrl = typeof media === "string" ? media : media.url;
+        {images[0] && (
+          <DesktopMediaItem
+            media={images[0]}
+            mediaIndex={0}
+            title={title}
+            loadedImages={loadedImages}
+            setLoadedImages={setLoadedImages}
+            setMediaRatios={setMediaRatios}
+            mediaRatio={mediaRatios[getMediaUrl(images[0])]}
+            allMediaLoaded={remainingDesktopMediaLoaded}
+            revealImmediately
+            className="w-full"
+            onOpen={(event) => {
+              triggerButtonRef.current = event.currentTarget;
+              openLightbox(0);
+            }}
+          />
+        )}
 
-          if (isYouTubeMedia(media)) {
-            return (
-              <div
-                key={media.url}
-                className="aspect-video w-full overflow-hidden rounded bg-black"
-              >
-                <iframe
-                  src={getYouTubeEmbedUrl(media)}
-                  title={`${title} video`}
-                  className="h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
-            );
-          }
+        {getDesktopRows(images, mediaRatios).map((row, rowIndex) => (
+          <div key={rowIndex} className="flex gap-2">
+            {row.map(({ media, width }) => {
+              const mediaIndex = images.indexOf(media);
 
-          return (
-            <button
-              key={imageUrl}
-              type="button"
-              className="relative block w-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              onClick={(event) => {
-                triggerButtonRef.current = event.currentTarget;
-                openLightbox(mediaIndex);
-              }}
-              aria-label={`Enlarge ${mediaAlt}`}
-            >
-              {!loadedImages[imageUrl] && (
-                <div
-                  className="absolute inset-0 animate-pulse rounded bg-surface"
-                  aria-hidden="true"
+              return (
+                <DesktopMediaItem
+                  key={getMediaUrl(media)}
+                  media={media}
+                  mediaIndex={mediaIndex}
+                  title={title}
+                  loadedImages={loadedImages}
+                  setLoadedImages={setLoadedImages}
+                  setMediaRatios={setMediaRatios}
+                  mediaRatio={mediaRatios[getMediaUrl(media)]}
+                  allMediaLoaded={remainingDesktopMediaLoaded}
+                  style={{ width }}
+                  onOpen={(event) => {
+                    triggerButtonRef.current = event.currentTarget;
+                    openLightbox(mediaIndex);
+                  }}
                 />
-              )}
-              <Image
-                src={imageUrl}
-                alt={mediaAlt}
-                width={800}
-                height={800}
-                className={`h-auto w-full rounded transition-opacity duration-500 ${loadedImages[imageUrl] ? "opacity-100" : "opacity-0"}`}
-                onLoad={() =>
-                  setLoadedImages((current) => ({
-                    ...current,
-                    [imageUrl]: true,
-                  }))
-                }
-                onError={() =>
-                  setLoadedImages((current) => ({
-                    ...current,
-                    [imageUrl]: true,
-                  }))
-                }
-              />
-            </button>
-          );
-        })}
+              );
+            })}
+          </div>
+        ))}
       </div>
 
       {activeIndex !== null && (
@@ -438,5 +468,93 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
         </div>
       )}
     </>
+  );
+}
+
+function DesktopMediaItem({
+  media,
+  mediaIndex,
+  title,
+  loadedImages,
+  setLoadedImages,
+  setMediaRatios,
+  mediaRatio,
+  allMediaLoaded,
+  revealImmediately = false,
+  className,
+  style,
+  onOpen,
+}: {
+  media: ArtMedia;
+  mediaIndex: number;
+  title: string;
+  loadedImages: Record<string, boolean>;
+  setLoadedImages: Dispatch<SetStateAction<Record<string, boolean>>>;
+  setMediaRatios: Dispatch<SetStateAction<MediaRatioMap>>;
+  mediaRatio?: number;
+  allMediaLoaded: boolean;
+  revealImmediately?: boolean;
+  className?: string;
+  style?: CSSProperties;
+  onOpen: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const mediaUrl = getMediaUrl(media);
+  const mediaAlt =
+    mediaIndex === 0 ? title : `${title}, media ${mediaIndex + 1}`;
+  const ratio = isYouTubeMedia(media) ? 16 / 9 : undefined;
+  const mediaLoaded = isMediaLoaded(media, loadedImages);
+  const shouldReveal = revealImmediately ? mediaLoaded : allMediaLoaded;
+
+  if (isYouTubeMedia(media)) {
+    return (
+      <div
+        className={`${className ?? ""} overflow-hidden rounded bg-black`}
+        style={{ ...style, aspectRatio: ratio }}
+      >
+        <iframe
+          src={getYouTubeEmbedUrl(media)}
+          title={`${title} video`}
+          className="h-full w-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={`${className ?? ""} relative block min-w-0 cursor-pointer overflow-hidden rounded bg-surface transition-[width,aspect-ratio] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
+      style={{ ...style, aspectRatio: ratio ?? mediaRatio ?? 1 }}
+      onClick={onOpen}
+      aria-label={`Enlarge ${mediaAlt}`}
+    >
+      {!shouldReveal && (
+        <div
+          className="absolute inset-0 animate-pulse bg-surface"
+          aria-hidden="true"
+        />
+      )}
+      <Image
+        src={mediaUrl}
+        alt={mediaAlt}
+        fill
+        className={`object-cover transition-opacity duration-500 ${shouldReveal ? "opacity-100" : "opacity-0"}`}
+        onLoad={(event) => {
+          setLoadedImages((current) => ({ ...current, [mediaUrl]: true }));
+          setMediaRatios((current) => ({
+            ...current,
+            [mediaUrl]:
+              event.currentTarget.naturalWidth /
+              event.currentTarget.naturalHeight,
+          }));
+        }}
+        onError={() =>
+          setLoadedImages((current) => ({ ...current, [mediaUrl]: true }))
+        }
+      />
+    </button>
   );
 }
