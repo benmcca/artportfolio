@@ -186,8 +186,7 @@ export default function ArtworkForm({
     }
 
     setMedia((current) => {
-      const targetIndex =
-        selectedMediaIndex < index ? index - 1 : index;
+      const targetIndex = selectedMediaIndex < index ? index - 1 : index;
       const next = [...current];
       const [selectedMedia] = next.splice(selectedMediaIndex, 1);
       next.splice(targetIndex, 0, selectedMedia);
@@ -350,22 +349,22 @@ export default function ArtworkForm({
                 className={`flex w-full max-w-full min-w-0 cursor-pointer items-center gap-1 overflow-hidden rounded border bg-surface p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring ${selectedMediaIndex === index ? "border-focus-ring bg-sidebar-active/30" : "border-sidebar-border"} ${!item.visible ? "opacity-55" : ""}`}
               >
                 <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded bg-background">
-                    {thumbnail ? (
-                      <div
-                        aria-hidden="true"
-                        className="h-full w-full bg-cover bg-center"
-                        style={{ backgroundImage: `url("${thumbnail}")` }}
-                      />
-                    ) : (
-                      <span className="flex h-full items-center justify-center text-xs">
-                        Video
-                      </span>
-                    )}
-                    {item.type === "youtube" && (
-                      <span className="absolute bottom-1 left-1 rounded bg-black/75 px-1 text-[10px] text-white">
-                        Video
-                      </span>
-                    )}
+                  {thumbnail ? (
+                    <div
+                      aria-hidden="true"
+                      className="h-full w-full bg-cover bg-center"
+                      style={{ backgroundImage: `url("${thumbnail}")` }}
+                    />
+                  ) : (
+                    <span className="flex h-full items-center justify-center text-xs">
+                      Video
+                    </span>
+                  )}
+                  {item.type === "youtube" && (
+                    <span className="absolute bottom-1 left-1 rounded bg-black/75 px-1 text-[10px] text-white">
+                      Video
+                    </span>
+                  )}
                 </div>
                 <span
                   className="block w-0 min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm text-muted-foreground"

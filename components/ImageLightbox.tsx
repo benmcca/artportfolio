@@ -355,6 +355,11 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
                   />
                 )}
                 <Image
+                  key={
+                    typeof images[activeIndex] === "string"
+                      ? images[activeIndex]
+                      : images[activeIndex].url
+                  }
                   src={
                     typeof images[activeIndex] === "string"
                       ? images[activeIndex]
