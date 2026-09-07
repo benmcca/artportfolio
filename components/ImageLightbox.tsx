@@ -123,6 +123,44 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const showNextCarouselItem = () => {
     setCarouselIndex((currentIndex) => (currentIndex + 1) % images.length);
   };
+  const isInsideDisplayedImage = (
+    image: HTMLImageElement,
+    event: MouseEvent<HTMLDivElement>,
+  ) => {
+    if (!image.naturalWidth || !image.naturalHeight) {
+      return true;
+    }
+
+    const bounds = image.getBoundingClientRect();
+    const imageRatio = image.naturalWidth / image.naturalHeight;
+    const boundsRatio = bounds.width / bounds.height;
+    const displayedWidth =
+      imageRatio > boundsRatio ? bounds.width : bounds.height * imageRatio;
+    const displayedHeight =
+      imageRatio > boundsRatio ? bounds.width / imageRatio : bounds.height;
+    const displayedLeft = bounds.left + (bounds.width - displayedWidth) / 2;
+    const displayedTop = bounds.top + (bounds.height - displayedHeight) / 2;
+
+    return (
+      event.clientX >= displayedLeft &&
+      event.clientX <= displayedLeft + displayedWidth &&
+      event.clientY >= displayedTop &&
+      event.clientY <= displayedTop + displayedHeight
+    );
+  };
+  const handleLightboxMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target;
+
+    if (target instanceof HTMLImageElement) {
+      if (isInsideDisplayedImage(target, event)) {
+        return;
+      }
+    } else if (target instanceof Element && target.closest("button, iframe")) {
+      return;
+    }
+
+    closeLightbox();
+  };
 
   useEffect(() => {
     if (activeIndex === null) {
@@ -346,11 +384,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
               setActiveIndex(null);
             }
           }}
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              closeLightbox();
-            }
-          }}
+          onMouseDown={handleLightboxMouseDown}
         >
           <button
             ref={closeButtonRef}
@@ -364,11 +398,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
 
           <div
             className="relative flex h-full w-full flex-col items-center justify-center gap-3 lg:flex-row lg:gap-0"
-            onMouseDown={(event) => {
-              if (event.target === event.currentTarget) {
-                closeLightbox();
-              }
-            }}
+            onMouseDown={handleLightboxMouseDown}
           >
             {images.length > 1 && (
               <button
