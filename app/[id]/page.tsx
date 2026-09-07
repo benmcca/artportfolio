@@ -1,6 +1,7 @@
 import { ArrowLeft, Pencil } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 import ImageLightbox from "../../components/ImageLightbox";
 import StickyTextPanel from "../../components/StickyTextPanel";
@@ -9,6 +10,27 @@ import { createSupabaseServerClient } from "../../utils/supabase/server";
 import type { Artwork } from "../../utils/artwork";
 
 type ArtworkCategoryRow = { category_id: number };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("artwork")
+    .select("title")
+    .eq("id", id)
+    .eq("visible", true)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Unable to load artwork metadata: ${error.message}`);
+  }
+
+  return { title: data?.title ?? "Ben McCabe Art" };
+}
 
 export default async function ArtworkPage({
   params,

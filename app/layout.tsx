@@ -13,7 +13,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Art Portfolio",
+  title: "Ben McCabe Portfolio",
   description: "Portfolio gallery",
 };
 
