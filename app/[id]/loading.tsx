@@ -5,7 +5,7 @@ export default function Loading() {
       aria-busy="true"
       aria-label="Loading artwork"
     >
-      <div className="mx-auto w-full min-w-0 max-w-[1200px]">
+      <div className="mx-auto w-full min-w-0 max-w-[1100px]">
         <div className="flex items-center">
           <div
             className="h-7 w-24 animate-pulse rounded bg-surface"
@@ -46,19 +46,11 @@ export default function Loading() {
                 aria-hidden="true"
               />
               <div
-                className="h-5 w-11/12 animate-pulse rounded bg-surface"
-                aria-hidden="true"
-              />
-              <div
                 className="h-5 w-4/5 animate-pulse rounded bg-surface"
                 aria-hidden="true"
               />
               <div
-                className="h-5 w-full animate-pulse rounded bg-surface"
-                aria-hidden="true"
-              />
-              <div
-                className="h-5 w-3/5 animate-pulse rounded bg-surface"
+                className="h-5 w-11/12 animate-pulse rounded bg-surface"
                 aria-hidden="true"
               />
             </div>

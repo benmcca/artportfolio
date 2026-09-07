@@ -5,7 +5,7 @@ export default function Loading() {
       aria-busy="true"
       aria-label="Loading gallery"
     >
-      <div className="mx-auto w-full min-w-0 max-w-[1200px]">
+      <div className="mx-auto w-full min-w-0 max-w-[1100px]">
         <div
           className="mb-8 h-10 w-52 animate-pulse rounded bg-surface"
           aria-hidden="true"

@@ -75,7 +75,7 @@ export default async function ArtworkPage({
 
   return (
     <main className="min-h-screen bg-background px-6 py-4 text-foreground lg:py-10">
-      <div className="mx-auto w-full min-w-0 max-w-[1200px]">
+      <div className="mx-auto w-full min-w-0 max-w-[1100px]">
         <div className="flex items-center justify-between">
           <Link
             href="/"
