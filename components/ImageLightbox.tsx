@@ -332,7 +332,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
 
       {activeIndex !== null && (
         <div
-          className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/15 p-4 backdrop-blur-lg transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lg:p-8 ${isLightboxVisible ? "opacity-100" : "opacity-0"}`}
+          className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/40 p-4 backdrop-blur-lg transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lg:p-8 ${isLightboxVisible ? "opacity-100" : "opacity-0"}`}
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
