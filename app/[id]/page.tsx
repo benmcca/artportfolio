@@ -127,6 +127,16 @@ export default async function ArtworkPage({
                       {children}
                     </h3>
                   ),
+                  a: ({ children, href }) => (
+                    <a
+                      href={href}
+                      className="text-foreground underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {children}
+                    </a>
+                  ),
                 }}
               >
                 {artwork.description}
