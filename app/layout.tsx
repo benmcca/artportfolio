@@ -13,8 +13,17 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ben McCabe Portfolio",
-  description: "Portfolio gallery",
+  title: "Ben's Art Portfolio",
+  description:
+    "A personal portfolio showcasing my paintings, woodworking projects, videos, and other creative work.",
+  openGraph: {
+    title: "Ben's Art Portfolio",
+    description:
+      "A personal portfolio showcasing my paintings, woodworking projects, videos, and other creative work.",
+    url: "https://benmakes.vercel.app",
+    siteName: "Ben's Art Portfolio",
+    type: "website",
+  },
 };
 
 export const dynamic = "force-dynamic";
