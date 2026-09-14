@@ -23,6 +23,21 @@ export const metadata: Metadata = {
     url: "https://benmakes.vercel.app",
     siteName: "Ben's Art Portfolio",
     type: "website",
+    images: [
+      {
+        url: "https://benmakes.vercel.app/icon.jpg",
+        width: 1315,
+        height: 1313,
+        alt: "Ben's Art Portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ben's Art Portfolio",
+    description:
+      "A personal portfolio showcasing my paintings, woodworking projects, videos, and other creative work.",
+    images: ["https://benmakes.vercel.app/icon.jpg"],
   },
 };
 
