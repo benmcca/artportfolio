@@ -7,6 +7,7 @@ import type {
   CSSProperties,
   Dispatch,
   MouseEvent,
+  RefObject,
   SetStateAction,
 } from "react";
 import {
@@ -76,6 +77,28 @@ function getDesktopRows(images: ArtMedia[], mediaRatios: MediaRatioMap) {
   });
 }
 
+function getAdjacentIndexes(index: number, length: number) {
+  return [(index - 1 + length) % length, (index + 1) % length];
+}
+
+function preloadImage(
+  imageUrl: string,
+  preloadedImages: RefObject<Record<string, boolean>>,
+  onLoad: () => void,
+) {
+  if (preloadedImages.current[imageUrl]) {
+    return;
+  }
+
+  preloadedImages.current[imageUrl] = true;
+
+  const image = new window.Image();
+
+  image.onload = onLoad;
+  image.onerror = onLoad;
+  image.src = imageUrl;
+}
+
 export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -94,6 +117,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
+  const preloadedCarouselImages = useRef<Record<string, boolean>>({});
   const preloadedLightboxImages = useRef<Record<string, boolean>>({});
 
   const openLightbox = (imageIndex: number) => {
@@ -218,16 +242,35 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   }, [activeIndex, images.length]);
 
   useEffect(() => {
+    if (images.length <= 1) {
+      return;
+    }
+
+    getAdjacentIndexes(carouselIndex, images.length).forEach((index) => {
+      const media = images[index];
+
+      if (isYouTubeMedia(media)) {
+        return;
+      }
+
+      const imageUrl = getMediaUrl(media);
+      const displayUrl = getImageKitImageUrl(imageUrl, 1600);
+
+      preloadImage(displayUrl, preloadedCarouselImages, () => {
+        setLoadedCarouselImages((current) => ({
+          ...current,
+          [imageUrl]: true,
+        }));
+      });
+    });
+  }, [carouselIndex, images]);
+
+  useEffect(() => {
     if (activeIndex === null || images.length <= 1) {
       return;
     }
 
-    const preloadIndexes = [
-      (activeIndex - 1 + images.length) % images.length,
-      (activeIndex + 1) % images.length,
-    ];
-
-    preloadIndexes.forEach((index) => {
+    getAdjacentIndexes(activeIndex, images.length).forEach((index) => {
       const media = images[index];
 
       if (isYouTubeMedia(media)) {
@@ -236,29 +279,12 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
 
       const imageUrl = getMediaUrl(media);
 
-      if (preloadedLightboxImages.current[imageUrl]) {
-        return;
-      }
-
-      preloadedLightboxImages.current[imageUrl] = true;
-
-      const image = new window.Image();
-
-      image.onload = () => {
+      preloadImage(imageUrl, preloadedLightboxImages, () => {
         setLoadedLightboxImages((current) => ({
           ...current,
           [imageUrl]: true,
         }));
-      };
-
-      image.onerror = () => {
-        setLoadedLightboxImages((current) => ({
-          ...current,
-          [imageUrl]: true,
-        }));
-      };
-
-      image.src = imageUrl;
+      });
     });
   }, [activeIndex, images]);
 
