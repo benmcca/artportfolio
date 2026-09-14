@@ -94,6 +94,7 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerButtonRef = useRef<HTMLButtonElement>(null);
+  const preloadedLightboxImages = useRef<Record<string, boolean>>({});
 
   const openLightbox = (imageIndex: number) => {
     setIsLightboxVisible(false);
@@ -215,6 +216,51 @@ export default function ImageLightbox({ images, title }: ImageLightboxProps) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [activeIndex, images.length]);
+
+  useEffect(() => {
+    if (activeIndex === null || images.length <= 1) {
+      return;
+    }
+
+    const preloadIndexes = [
+      (activeIndex - 1 + images.length) % images.length,
+      (activeIndex + 1) % images.length,
+    ];
+
+    preloadIndexes.forEach((index) => {
+      const media = images[index];
+
+      if (isYouTubeMedia(media)) {
+        return;
+      }
+
+      const imageUrl = getMediaUrl(media);
+
+      if (preloadedLightboxImages.current[imageUrl]) {
+        return;
+      }
+
+      preloadedLightboxImages.current[imageUrl] = true;
+
+      const image = new window.Image();
+
+      image.onload = () => {
+        setLoadedLightboxImages((current) => ({
+          ...current,
+          [imageUrl]: true,
+        }));
+      };
+
+      image.onerror = () => {
+        setLoadedLightboxImages((current) => ({
+          ...current,
+          [imageUrl]: true,
+        }));
+      };
+
+      image.src = imageUrl;
+    });
+  }, [activeIndex, images]);
 
   return (
     <>
